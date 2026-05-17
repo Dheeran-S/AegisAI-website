@@ -9,6 +9,7 @@ router.get('/', async (req, res) => {
     const [rows] = await db.query('SELECT setting_key, setting_value FROM settings');
     const settings = {};
     rows.forEach(r => { settings[r.setting_key] = r.setting_value; });
+    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
     res.json(settings);
   } catch (err) {
     res.status(500).json({ error: err.message });

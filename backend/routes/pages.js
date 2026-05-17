@@ -7,6 +7,7 @@ const router  = express.Router();
 router.get('/', async (req, res) => {
   try {
     const [pages] = await db.query('SELECT id, slug, title, meta_description, nav_order FROM pages ORDER BY nav_order');
+    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
     res.json(pages);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -70,6 +71,7 @@ router.get('/:slug', async (req, res) => {
       'SELECT * FROM sections WHERE page_id = ? ORDER BY section_order',
       [page.id]
     );
+    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
     res.json({ ...page, sections });
   } catch (err) {
     res.status(500).json({ error: err.message });
