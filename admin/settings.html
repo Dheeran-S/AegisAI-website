@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Settings — AegisAI Admin</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <span class="sl-top">SHIV NADAR</span><span class="sl-mid">UNIVERSITY</span><span class="sl-bot">CHENNAI</span>
+      </div>
+      <div class="sidebar-subtitle">AegisAI 2027 · Admin Panel</div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Pages</a>
+      <a href="contacts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Contact Messages</a>
+      <a href="settings.html" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-admin" id="admin-name">Admin</div>
+      <button class="btn-a btn-ghost-a btn-sm" onclick="localStorage.clear();location.href='login.html'">Sign Out</button>
+    </div>
+  </aside>
+  <main class="admin-main">
+    <div class="topbar">
+      <h1>Global Settings</h1>
+      <button class="btn-a btn-primary-a" onclick="saveAll()">Save All Settings</button>
+    </div>
+    <div id="save-msg"></div>
+    <div class="a-card">
+      <div class="settings-grid" id="settings-grid"><div style="color:var(--muted)">Loading…</div></div>
+    </div>
+  </main>
+</div>
+<script>
+const token = localStorage.getItem('aegis_token');
+if (!token) location.href = 'login.html';
+document.getElementById('admin-name').textContent = localStorage.getItem('aegis_name') || 'Admin';
+const labels = {
+  site_name:'Site Name', site_tagline:'Site Tagline', conference_year:'Year',
+  conference_dates:'Conference Dates', host_institution:'Host Institution',
+  contact_email:'Contact Email', footer_note:'Footer Note', cfp_submission_url:'CFP Submission URL'
+};
+async function load() {
+  const r = await fetch('/api/settings');
+  const s = await r.json();
+  document.getElementById('settings-grid').innerHTML = Object.entries(s).map(([k,v])=>`
+    <div class="form-group-a">
+      <label class="form-label-a">${labels[k]||k}</label>
+      <input class="form-input-a" id="s-${k}" value="${v.replace(/"/g,'&quot;')}">
+    </div>`).join('');
+}
+async function saveAll() {
+  const body = {};
+  document.querySelectorAll('[id^="s-"]').forEach(el => { body[el.id.slice(2)] = el.value; });
+  const r = await fetch('/api/settings', { method:'PATCH', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}, body: JSON.stringify(body) });
+  const msg = document.getElementById('save-msg');
+  msg.innerHTML = r.ok ? '<div class="alert alert-success">Settings saved.</div>' : '<div class="alert alert-error">Save failed.</div>';
+  setTimeout(()=>{msg.innerHTML='';}, 3000);
+}
+load();
+</script>
+</body>
+</html>

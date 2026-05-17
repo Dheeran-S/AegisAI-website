@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin Login — AegisAI 2027</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">
+      <span class="ll-top">SHIV NADAR</span>
+      <span class="ll-mid">UNIVERSITY</span>
+      <span class="ll-bot">CHENNAI</span>
+      <div style="margin-top:.6rem;font-size:.7rem;font-weight:600;color:var(--primary);letter-spacing:.1em">AegisAI 2027 · Admin</div>
+    </div>
+    <h2>Sign in to continue</h2>
+    <div id="login-alert" style="display:none" class="alert alert-error"></div>
+    <form id="login-form">
+      <div class="form-group-a">
+        <label class="form-label-a" for="l-email">Email address</label>
+        <input class="form-input-a" type="email" id="l-email" placeholder="admin@aegisai.org" required>
+      </div>
+      <div class="form-group-a">
+        <label class="form-label-a" for="l-pass">Password</label>
+        <input class="form-input-a" type="password" id="l-pass" placeholder="••••••••" required>
+      </div>
+      <button class="btn-a btn-primary-a" style="width:100%;margin-top:.5rem;padding:.7rem" type="submit" id="login-btn">Sign In</button>
+    </form>
+  </div>
+</div>
+<script>
+const API = '/api';
+document.getElementById('login-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = document.getElementById('login-btn');
+  const alert = document.getElementById('login-alert');
+  btn.textContent = 'Signing in…'; btn.disabled = true;
+  alert.style.display = 'none';
+  try {
+    const r = await fetch(API + '/auth/login', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ email: document.getElementById('l-email').value, password: document.getElementById('l-pass').value })
+    });
+    const d = await r.json();
+    if (r.ok) {
+      localStorage.setItem('aegis_token', d.token);
+      localStorage.setItem('aegis_name', d.name);
+      window.location.href = 'dashboard.html';
+    } else {
+      alert.textContent = d.error || 'Login failed'; alert.style.display = 'block';
+    }
+  } catch { alert.textContent = 'Network error'; alert.style.display = 'block'; }
+  btn.textContent = 'Sign In'; btn.disabled = false;
+});
+</script>
+</body>
+</html>
