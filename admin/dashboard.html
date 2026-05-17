@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dashboard — AegisAI Admin</title>
+  <link rel="stylesheet" href="css/admin.css">
+  <style>
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:9000; align-items:center; justify-content:center; }
+    .modal-overlay.open { display:flex; }
+    .modal { background:#fff; border-radius:12px; padding:2rem; width:100%; max-width:460px; box-shadow:0 20px 60px rgba(0,0,0,.25); }
+    .modal h3 { font-size:1.1rem; font-weight:700; color:var(--primary); margin-bottom:1.25rem; }
+    .modal-footer { display:flex; gap:.75rem; justify-content:flex-end; margin-top:1.5rem; }
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <span class="sl-top">SHIV NADAR</span>
+        <span class="sl-mid">UNIVERSITY</span>
+        <span class="sl-bot">CHENNAI</span>
+      </div>
+      <div class="sidebar-subtitle">AegisAI 2027 · Admin Panel</div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Pages
+      </a>
+      <a href="contacts.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Contact Messages
+      </a>
+      <a href="settings.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        Settings
+      </a>
+      <a href="/" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        View Public Site
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-admin" id="admin-name">Admin</div>
+      <button class="btn-a btn-ghost-a btn-sm" onclick="logout()">Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="admin-main">
+    <div class="topbar">
+      <h1>Pages</h1>
+      <div class="topbar-actions">
+        <a href="/" target="_blank" class="btn-a btn-ghost-a btn-sm">↗ View Site</a>
+        <button class="btn-a btn-primary-a" onclick="openNewPageModal()">+ New Page</button>
+      </div>
+    </div>
+
+    <div id="dash-alert"></div>
+
+    <div class="a-card">
+      <h2>All Pages</h2>
+      <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem">Click <strong>Edit Content</strong> to manage sections. Click <strong>Preview</strong> to view the live page.</p>
+      <div class="pages-list" id="pages-list">
+        <div style="color:var(--muted);font-size:.85rem">Loading…</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- New Page Modal -->
+<div class="modal-overlay" id="new-page-modal">
+  <div class="modal">
+    <h3>Create New Page</h3>
+    <div id="modal-alert"></div>
+    <div class="form-group-a">
+      <label class="form-label-a" for="np-title">Page Title</label>
+      <input class="form-input-a" id="np-title" placeholder="e.g. Programme" required>
+    </div>
+    <div class="form-group-a">
+      <label class="form-label-a" for="np-slug">URL Slug</label>
+      <input class="form-input-a" id="np-slug" placeholder="e.g. programme (no spaces, lowercase)">
+      <div class="form-hint">The page will be accessible at /{slug}.html</div>
+    </div>
+    <div class="form-group-a">
+      <label class="form-label-a" for="np-meta">Meta Description (optional)</label>
+      <input class="form-input-a" id="np-meta" placeholder="Short description for search engines">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-a btn-ghost-a" onclick="closeNewPageModal()">Cancel</button>
+      <button class="btn-a btn-primary-a" id="np-submit" onclick="createPage()">Create Page</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '/api';
+const token = localStorage.getItem('aegis_token');
+if (!token) window.location.href = 'login.html';
+document.getElementById('admin-name').textContent = localStorage.getItem('aegis_name') || 'Admin';
+
+// Auto-fill slug from title
+document.getElementById('np-title').addEventListener('input', e => {
+  document.getElementById('np-slug').value = e.target.value
+    .toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+});
+
+async function loadPages() {
+  try {
+    const r = await fetch(API + '/pages');
+    const pages = await r.json();
+    const list = document.getElementById('pages-list');
+    list.innerHTML = pages.map(p => `
+      <div class="page-row" id="pr-${p.id}">
+        <div class="page-row-info">
+          <div class="page-row-title">${p.title}</div>
+          <div class="page-row-slug">/${p.slug}</div>
+        </div>
+        <div class="page-row-actions">
+          <a href="${p.slug === 'home' ? '/' : '/' + p.slug + '.html'}" target="_blank" class="btn-a btn-ghost-a btn-sm">Preview</a>
+          <a href="editor.html?page=${p.slug}&id=${p.id}" class="btn-a btn-primary-a btn-sm">Edit Content</a>
+          <button class="btn-a btn-danger-a btn-sm" onclick="deletePage(${p.id},'${p.slug}','${p.title}')">Delete</button>
+        </div>
+      </div>`).join('');
+  } catch(e) { console.error(e); }
+}
+
+function openNewPageModal() {
+  document.getElementById('np-title').value = '';
+  document.getElementById('np-slug').value = '';
+  document.getElementById('np-meta').value = '';
+  document.getElementById('modal-alert').innerHTML = '';
+  document.getElementById('new-page-modal').classList.add('open');
+}
+function closeNewPageModal() {
+  document.getElementById('new-page-modal').classList.remove('open');
+}
+// Close modal on overlay click
+document.getElementById('new-page-modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeNewPageModal();
+});
+
+async function createPage() {
+  const title = document.getElementById('np-title').value.trim();
+  const slug  = document.getElementById('np-slug').value.trim();
+  const meta  = document.getElementById('np-meta').value.trim();
+  const btn   = document.getElementById('np-submit');
+  const alert = document.getElementById('modal-alert');
+
+  if (!title || !slug) {
+    alert.innerHTML = '<div class="alert alert-error">Title and slug are required.</div>'; return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Creating…';
+  try {
+    const r = await fetch(API + '/pages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      body: JSON.stringify({ slug, title, meta_description: meta })
+    });
+    const d = await r.json();
+    if (r.ok) {
+      closeNewPageModal();
+      // Go straight to the editor for the new page
+      window.location.href = `editor.html?page=${d.slug}&id=${d.id}`;
+    } else {
+      alert.innerHTML = `<div class="alert alert-error">${d.error}</div>`;
+    }
+  } catch { alert.innerHTML = '<div class="alert alert-error">Network error.</div>'; }
+  btn.disabled = false; btn.textContent = 'Create Page';
+}
+
+async function deletePage(id, slug, title) {
+  if (!confirm(`Delete page "${title}" (/${slug}) and ALL its sections? This cannot be undone.`)) return;
+  try {
+    const r = await fetch(API + '/pages/' + id, {
+      method: 'DELETE', headers: { Authorization: 'Bearer ' + token }
+    });
+    if (r.ok) {
+      document.getElementById('pr-' + id)?.remove();
+      document.getElementById('dash-alert').innerHTML = '<div class="alert alert-success">Page deleted.</div>';
+      setTimeout(() => { document.getElementById('dash-alert').innerHTML = ''; }, 3000);
+    }
+  } catch(e) { console.error(e); }
+}
+
+function logout() {
+  localStorage.removeItem('aegis_token');
+  localStorage.removeItem('aegis_name');
+  window.location.href = 'login.html';
+}
+
+loadPages();
+</script>
+</body>
+</html>
