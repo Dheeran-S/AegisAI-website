@@ -61,8 +61,12 @@ function renderTextBlock(data) {
 }
 
 function renderLogoBar(data) {
-  const logos = (data.logos || []).map(l => `
-    <div class="logo-placeholder">${esc(l.name)}</div>`).join('');
+  const logos = (data.logos || []).map(l => {
+    if (l.url && l.url.trim() !== '' && l.url.trim() !== '#') {
+      return `<img src="${esc(l.url)}" alt="${esc(l.name)}" class="logo-image" title="${esc(l.name)}">`;
+    }
+    return `<div class="logo-placeholder">${esc(l.name)}</div>`;
+  }).join('');
   return `
   <div class="logo-bar fade-in">
     <div class="logo-bar-heading">${esc(data.heading || 'Sponsors & Co-Organisers')}</div>

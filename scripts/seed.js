@@ -1,20 +1,20 @@
 require('dotenv').config();
-const mysql  = require('mysql2/promise');
+const mysql = require('mysql2/promise');
 const bcrypt = require('bcryptjs');
-const fs     = require('fs');
-const path   = require('path');
+const fs = require('fs');
+const path = require('path');
 
 const DB = process.env.DB_NAME || 'aegisai_conf';
 
 // ── All seed data as plain JS objects (no encoding issues) ──────────
 const PAGES = [
-  { slug: 'home',      title: 'Home',            meta_description: 'AegisAI 2027 - International Conference on AI-Driven Secure and Intelligent Systems, 25-27 March 2027', nav_order: 1 },
-  { slug: 'about',     title: 'About',            meta_description: 'About AegisAI 2027 - scope, goals, and themes of the conference.', nav_order: 2 },
-  { slug: 'cfp',       title: 'Call for Papers',  meta_description: 'Submit your research to AegisAI 2027. Topics, dates, and submission guidelines.', nav_order: 3 },
-  { slug: 'speakers',  title: 'Speakers',         meta_description: 'Keynote and invited speakers at AegisAI 2027.', nav_order: 4 },
-  { slug: 'committee', title: 'Committee',        meta_description: 'Organising and program committee of AegisAI 2027.', nav_order: 5 },
-  { slug: 'venue',     title: 'Venue',            meta_description: 'Conference venue - Shiv Nadar University Chennai, Tamil Nadu, India.', nav_order: 6 },
-  { slug: 'contact',   title: 'Contact',          meta_description: 'Get in touch with the AegisAI 2027 organising team.', nav_order: 7 },
+  { slug: 'home', title: 'Home', meta_description: 'AegisAI 2027 - International Conference on AI-Driven Secure and Intelligent Systems, 25-27 March 2027', nav_order: 1 },
+  { slug: 'about', title: 'About', meta_description: 'About AegisAI 2027 - scope, goals, and themes of the conference.', nav_order: 2 },
+  { slug: 'cfp', title: 'Call for Papers', meta_description: 'Submit your research to AegisAI 2027. Topics, dates, and submission guidelines.', nav_order: 3 },
+  { slug: 'speakers', title: 'Speakers', meta_description: 'Keynote and invited speakers at AegisAI 2027.', nav_order: 4 },
+  { slug: 'committee', title: 'Committee', meta_description: 'Organising and program committee of AegisAI 2027.', nav_order: 5 },
+  { slug: 'venue', title: 'Venue', meta_description: 'Conference venue - Shiv Nadar University Chennai, Tamil Nadu, India.', nav_order: 6 },
+  { slug: 'contact', title: 'Contact', meta_description: 'Get in touch with the AegisAI 2027 organising team.', nav_order: 7 },
 ];
 
 // Sections: [slug, type, order, data]
@@ -146,32 +146,39 @@ const SECTIONS = [
 ];
 
 const SETTINGS = {
-  site_name:         'AegisAI 2027',
-  site_tagline:      'International Conference on AI-Driven Secure and Intelligent Systems',
-  conference_year:   '2027',
-  conference_dates:  '25-27 March 2027',
-  host_institution:  'Shiv Nadar University Chennai',
-  contact_email:     'aegisai2027@snuchennai.edu.in',
-  footer_note:       'c 2027 AegisAI Conference. All rights reserved.',
-  cfp_submission_url:'#'
+  site_name: 'AegisAI 2027',
+  site_tagline: 'International Conference on AI-Driven Secure and Intelligent Systems',
+  conference_year: '2027',
+  conference_dates: '25-27 March 2027',
+  host_institution: 'Shiv Nadar University Chennai',
+  contact_email: 'aegisai2027@snuchennai.edu.in',
+  footer_note: 'c 2027 AegisAI Conference. All rights reserved.',
+  cfp_submission_url: '#'
 };
 
 // ── Main seed function ───────────────────────────────────────────────
 async function seed() {
   const conn = await mysql.createConnection({
-    host:              process.env.DB_HOST || 'localhost',
-    port:              parseInt(process.env.DB_PORT) || 3306,
-    user:              process.env.DB_USER || 'root',
-    password:          process.env.DB_PASSWORD || '',
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT) || 3306,
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: 'mysql',
     multipleStatements: true,
-    charset:           'utf8mb4'
+    charset: 'utf8mb4',
+
+    ssl: {
+      minVersion: 'TLSv1.2',
+      rejectUnauthorized: true
+    }
   });
 
   console.log('Connected to MySQL');
 
   // Drop and recreate database for a clean slate
-  await conn.query(`DROP DATABASE IF EXISTS \`${DB}\``);
-  console.log(`Dropped database '${DB}'`);
+  await conn.query(`CREATE DATABASE IF NOT EXISTS \`${DB}\``);
+  console.log(`Created database '${DB}'`);
+  await conn.query(`USE \`${DB}\``);
 
   const schema = fs.readFileSync(path.join(__dirname, '../schema.sql'), 'utf8');
   await conn.query(schema);
@@ -182,37 +189,47 @@ async function seed() {
 
   // Insert pages and collect their IDs
   const slugToId = {};
+
   for (const p of PAGES) {
     const [r] = await conn.query(
       'INSERT INTO pages (slug, title, meta_description, nav_order) VALUES (?, ?, ?, ?)',
       [p.slug, p.title, p.meta_description, p.nav_order]
     );
+
     slugToId[p.slug] = r.insertId;
   }
+
   console.log('Pages inserted');
 
-  // Insert sections using page IDs
+  // Insert sections
   for (const [slug, type, order, data] of SECTIONS) {
     await conn.query(
       'INSERT INTO sections (page_id, type, section_order, data) VALUES (?, ?, ?, ?)',
       [slugToId[slug], type, order, JSON.stringify(data)]
     );
   }
+
   console.log('Sections inserted');
 
   // Insert settings
   for (const [k, v] of Object.entries(SETTINGS)) {
-    await conn.query('INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)', [k, v]);
+    await conn.query(
+      'INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)',
+      [k, v]
+    );
   }
+
   console.log('Settings inserted');
 
-  // Create admin with bcrypt-hashed password
+  // Create admin
   const hash = await bcrypt.hash('Admin@1234', 12);
+
   await conn.query(
     'INSERT INTO admins (email, password_hash, name) VALUES (?, ?, ?)',
     ['admin@aegisai.org', hash, 'Site Admin']
   );
-  console.log('Admin created  ->  admin@aegisai.org / Admin@1234');
+
+  console.log('Admin created -> admin@aegisai.org / Admin@1234');
   console.log('\nSetup complete. Run: npm run dev');
 
   await conn.end();

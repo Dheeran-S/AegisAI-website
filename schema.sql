@@ -1,7 +1,5 @@
 -- AegisAI 2027 Conference — MySQL Schema (table definitions only)
 -- Seed data is inserted by scripts/seed.js
-CREATE DATABASE IF NOT EXISTS aegisai_conf CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE aegisai_conf;
 
 CREATE TABLE IF NOT EXISTS admins (
   id INT AUTO_INCREMENT PRIMARY KEY,

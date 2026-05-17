@@ -216,6 +216,8 @@ body {
   transition: var(--transition);
 }
 .logo-placeholder:hover { border-color: var(--primary-light); color: var(--primary-light); }
+.logo-image { height: 52px; max-width: 180px; object-fit: contain; transition: var(--transition); }
+.logo-image:hover { transform: scale(1.05); }
 
 /* ── UNIVERSITY INFO ── */
 .university-section {
