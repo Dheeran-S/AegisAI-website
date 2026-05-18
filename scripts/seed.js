@@ -129,7 +129,7 @@ const SECTIONS = [
   }],
   ['venue', 'map_embed', 2, {
     address: 'Shiv Nadar University Chennai\nSholinganallur, Chennai\nTamil Nadu 600119, India',
-    map_url: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.1234!2d80.2270!3d12.9081!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU0JzI5LjIiTiA4MMKwMTMnMzcuMiJF!5e0!3m2!1sen!2sin!4v1620000000000',
+    map_url: 'https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d3891.4145937258795!2d80.19278134999999!3d12.7515658!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sShiv%20Nadar%20University%20MINI%20AUDITORIUM%2C%20SRI%20SIVASUBRAMANIYA%20NADAR%20COLLEGE%20OF%20ENGINEERING%2C%20SH%2049A%2C%20Kalavakkam%2C%20Tamil%20Nadu%20603110%2C%20India!5e0!3m2!1sen!2sin!4v1779068819242!5m2!1sen!2sin',
     travel_info: 'Chennai is well connected by air, rail, and road. The nearest airport is Chennai International Airport (MAA), approximately 18 km from the venue. Metro and cab services are readily available.'
   }],
 
