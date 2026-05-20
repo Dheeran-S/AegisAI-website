@@ -42,6 +42,7 @@ async function loadPage(slug, targetId) {
     }
     target.innerHTML = html;
     initFadeIn();
+    initVideoLoopTransition();
     highlightNav(slug);
   } catch (err) {
     target.innerHTML = `<div class="page-loading"><p style="color:var(--muted)">Unable to load content.</p></div>`;
@@ -52,6 +53,20 @@ async function loadPage(slug, targetId) {
 function highlightNav(slug) {
   document.querySelectorAll('.nav-links a').forEach(a => {
     a.classList.toggle('active', a.dataset.page === slug);
+  });
+}
+
+function initVideoLoopTransition() {
+  const video = document.querySelector('.hero-video-bg');
+  if (!video) return;
+
+  video.addEventListener('timeupdate', () => {
+    // Fade out to black 0.4 seconds before the video ends to create a smooth loop transition
+    if (video.duration > 0 && video.duration - video.currentTime < 0.4) {
+      video.style.opacity = '0';
+    } else {
+      video.style.opacity = '1';
+    }
   });
 }
 

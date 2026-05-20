@@ -6,6 +6,9 @@ function renderHero(data) {
     : '';
   return `
   <section class="hero">
+    <video class="hero-video-bg" autoplay loop muted playsinline>
+      <source src="/images/aegis_hero.webm" type="video/webm">
+    </video>
     <div class="hero-inner">
       <div class="hero-logo-row">
         <div class="snu-logo">
