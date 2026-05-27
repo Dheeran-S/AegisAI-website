@@ -11,11 +11,7 @@ function renderHero(data) {
     </video>
     <div class="hero-inner">
       <div class="hero-logo-row">
-        <div class="snu-logo">
-          <span class="sl-top">SHIV NADAR</span>
-          <span class="sl-mid">UNIVERSITY</span>
-          <span class="sl-bot">C H E N N A I</span>
-        </div>
+        <img src="/images/logo.webp" alt="Shiv Nadar University" style="height: 100px; object-fit: contain;">
         ${badge}
       </div>
       <h1>${esc(data.conference_name)}</h1>
