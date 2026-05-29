@@ -32,6 +32,7 @@ async function loadPage(slug, targetId) {
 
     // Set meta
     document.title = page.title + ' — AegisAI 2027';
+    document.body.classList.toggle('is-home', slug === 'home');
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) metaDesc.content = page.meta_description || '';
 
@@ -70,8 +71,19 @@ function initVideoLoopTransition() {
   });
 }
 
-// Navbar hamburger
+// Navbar scroll effect and hamburger
 document.addEventListener('DOMContentLoaded', () => {
+  const nav = document.querySelector('.navbar');
+  if (nav) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    });
+  }
+
   const ham = document.getElementById('nav-hamburger');
   const links = document.getElementById('nav-links');
   if (ham && links) {

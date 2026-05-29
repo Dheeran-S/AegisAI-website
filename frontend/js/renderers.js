@@ -1,34 +1,18 @@
 // ── Section Renderers ──────────────────────────────────────────────────
 
 function renderHero(data) {
-  const badge = data.badge && data.badge.trim().toLowerCase() !== 'none' && data.badge.trim() !== ''
-    ? `<div class="hero-badge">${esc(data.badge)}</div>`
-    : '';
   return `
   <section class="hero">
-    <video class="hero-video-bg" autoplay loop muted playsinline>
-      <source src="/images/aegis_hero.webm" type="video/webm">
-    </video>
-    <div class="hero-inner">
-      <div class="hero-logo-row">
-        <img src="/images/logo.webp" alt="Shiv Nadar University" style="height: 100px; object-fit: contain;">
-        ${badge}
-      </div>
-      <h1>${esc(data.conference_name)}</h1>
-      <p class="hero-tagline">${esc(data.tagline)}</p>
-      <div class="hero-meta">
-        <div class="hero-meta-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          ${esc(data.dates)}
+    <img class="hero-video-bg" src="/images/Gemini_Generated_Image_3oej803oej803oej.png" alt="University Gate">
+    
+    <div class="hero-content-wrapper">
+      <div class="hero-center-content">
+        <h1>${esc(data.conference_name)}</h1>
+        <h2 class="hero-fullname">${esc(data.tagline).replace('Secure and Intelligent', '<br>Secure & Intelligent')}</h2>
+        <div class="hero-center-actions-stacked">
+          <a href="/cfp" class="btn btn-pill btn-primary">Call for Papers</a>
+          <a href="/about" class="btn btn-pill btn-glass">Learn More</a>
         </div>
-        <div class="hero-meta-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
-          ${esc(data.institution)}, ${esc(data.location)}
-        </div>
-      </div>
-      <div class="hero-actions">
-        <a href="/cfp" class="btn btn-primary">Submit a Paper</a>
-        <a href="/about" class="btn btn-outline">Learn More</a>
       </div>
     </div>
   </section>`;

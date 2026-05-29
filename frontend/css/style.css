@@ -41,17 +41,38 @@ body {
 
 /* ── NAVBAR ── */
 .navbar {
-  position: absolute;
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  background: transparent;
+  background: #1e3a5f;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   padding: 0 2rem;
-  height: 64px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.is-home .navbar {
+  position: fixed;
+  top: 20px;
+  height: 90px;
+  background: transparent;
+  box-shadow: none;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.is-home .navbar.scrolled {
+  top: 0;
+  height: 60px;
+  background: #1e3a5f;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.is-home .navbar:not(.scrolled) .nav-links a {
+  font-size: 1.15rem;
 }
 
 .nav-brand {
@@ -103,30 +124,58 @@ body {
   width: 1px;
   height: 28px;
   background: rgba(255, 255, 255, .2);
+  transition: all 0.4s ease;
+  opacity: 1;
+  max-width: 1px;
 }
 
 .nav-conf {
-  font-size: .75rem;
-  font-weight: 700;
-  color: rgba(255, 255, 255, .85);
-  letter-spacing: .05em;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: .08em;
+  transition: all 0.4s ease;
+  opacity: 1;
+  max-width: 200px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.is-home .navbar:not(.scrolled) .nav-conf,
+.is-home .navbar:not(.scrolled) .nav-divider {
+  opacity: 0;
+  max-width: 0;
+  margin: 0;
+  padding: 0;
+  transform: translateX(-10px);
 }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: .25rem;
+  gap: 0.5rem;
   list-style: none;
+  text-transform: capitalize;
 }
 
 .nav-links a {
-  color: rgba(255, 255, 255, .8);
+  color: #fff;
   text-decoration: none;
-  font-size: .83rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  padding: .45rem .9rem;
+  padding: 0.4rem 0.6rem;
   border-radius: var(--radius-sm);
   transition: var(--transition);
+  white-space: nowrap;
+}
+
+.is-home .navbar:not(.scrolled) .nav-links {
+  gap: 1.5rem;
+}
+
+.is-home .navbar:not(.scrolled) .nav-links a {
+  padding: 0.5rem 1rem;
+  font-weight: 500;
 }
 
 .nav-links a:hover,
@@ -163,20 +212,33 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 5rem 2rem 4rem;
   position: relative;
   overflow: hidden;
+  padding: 80px 2rem 2rem;
 }
 
 .hero::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(45, 95, 138, 0.75) 0%, rgba(0, 0, 0, 0.15) 35%, rgba(0, 0, 0, 0.15) 100%);
+  background: linear-gradient(to bottom, rgba(30, 58, 95, 0.8) 0%, rgba(30, 58, 95, 0.3) 30%, transparent 60%, rgba(3, 8, 18, 0.85) 100%);
   z-index: 1;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+@keyframes pulseGlow {
+  0% { opacity: 0.6; transform: translate(-50%, -50%) scale(0.9); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
 }
 
 .hero-video-bg {
@@ -187,124 +249,120 @@ body {
   height: 100%;
   object-fit: cover;
   z-index: 0;
-  transform: scale(1.1);
   transition: opacity 0.4s ease;
 }
 
-.hero-inner {
+.hero-content-wrapper {
   position: relative;
   z-index: 2;
-  max-width: 780px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100vh - 100px);
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* SNU logo in hero */
-.hero-logo-row {
-  position: relative;
+/* Center Content */
+.hero-center-content {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.snu-logo {
-  display: inline-block;
-}
-
-.snu-logo .sl-top {
-  font-size: 2.1rem;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: .15em;
-  display: block;
-}
-
-.snu-logo .sl-mid {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: .95rem;
-  font-weight: 600;
-  letter-spacing: .35em;
-  color: var(--accent);
-  margin: 2px 0;
-}
-
-.snu-logo .sl-mid::before,
-.snu-logo .sl-mid::after {
-  content: '';
   flex: 1;
-  height: 1.5px;
-  background: var(--accent);
+  text-align: center;
+  padding-bottom: 8vh;
+  position: relative;
 }
 
-.snu-logo .sl-bot {
-  font-size: .75rem;
-  letter-spacing: .55em;
-  color: rgba(255, 255, 255, .55);
-  text-transform: uppercase;
-  display: block;
-}
-
-.hero-badge {
+.hero-center-content::before {
+  content: '';
   position: absolute;
-  right: 0;
   top: 50%;
-  transform: translateY(-50%);
-  background: var(--accent);
-  color: var(--primary-dark);
-  font-size: .72rem;
-  font-weight: 700;
-  letter-spacing: .1em;
-  padding: .3rem .9rem;
-  border-radius: 50px;
-  text-transform: uppercase;
-  white-space: nowrap;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60vw;
+  height: 60vh;
+  background: radial-gradient(circle, rgba(147, 197, 253, 0.12) 0%, transparent 60%);
+  z-index: -1;
+  pointer-events: none;
+  animation: pulseGlow 8s ease-in-out infinite alternate;
 }
 
 .hero h1 {
-  font-size: clamp(2.8rem, 6vw, 4.6rem);
-  font-weight: 800;
-  color: #fff;
+  font-size: clamp(2.6rem, 5.5vw, 3.8rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.35);
   line-height: 1.1;
   margin-bottom: 1rem;
 }
 
-.hero-tagline {
-  font-size: 1.05rem;
-  color: rgba(255, 255, 255, .75);
-  max-width: 600px;
-  margin: 0 auto 2rem;
-}
-
-.hero-meta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
-  flex-wrap: wrap;
+.hero-fullname {
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  font-weight: 400;
+  color: #ffffff;
+  max-width: 760px;
   margin-bottom: 2.5rem;
+  line-height: 1.45;
+  letter-spacing: 0.2px;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.7);
+  display: inline-block;
+  padding: 0.4rem 1.2rem;
+  background: rgba(255, 255, 255, 0.01);
+  backdrop-filter: blur(2px);
+  border-radius: 50px;
+  border: none;
 }
 
-.hero-meta-item {
+.hero-center-actions-stacked {
   display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
   align-items: center;
-  gap: .5rem;
-  color: rgba(255, 255, 255, .85);
-  font-size: .9rem;
-  font-weight: 500;
+  margin-top: 1rem;
 }
 
-.hero-meta-item svg {
-  width: 16px;
-  height: 16px;
-  opacity: .8;
-}
-
-.hero-actions {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
+.btn-pill {
+  border-radius: 12px;
+  min-width: 280px;
+  text-align: center;
   justify-content: center;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  padding: 1.1rem 2rem;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  text-transform: uppercase;
+}
+
+.btn-primary {
+  background: #d2a84a;
+  color: #152d4a;
+  border: none;
+  box-shadow: 0 10px 30px rgba(210,168,74,0.18);
+}
+
+.btn-primary:hover {
+  background: #e3b753;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(210,168,74,0.3);
+}
+
+.btn-glass {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+}
+
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .btn {
@@ -322,16 +380,7 @@ body {
   font-family: inherit;
 }
 
-.btn-primary {
-  background: var(--accent);
-  color: var(--primary-dark);
-}
-
-.btn-primary:hover {
-  background: #f0c84f;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(232, 184, 75, .4);
-}
+/* Duplicate .btn-primary removed */
 
 .btn-outline {
   background: transparent;
