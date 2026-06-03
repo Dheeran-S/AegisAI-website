@@ -88,7 +88,7 @@ function renderUniversityInfo(data) {
 }
 
 function renderTopicsList(data) {
-  const items = (data.topics || []).map(t => `<div class="topic-item">${esc(t)}</div>`).join('');
+  const items = (data.topics || []).map(t => `<div class="topic-item">${allowSafeHtml(t)}</div>`).join('');
   return `
   <section class="section fade-in">
     <div class="container">
@@ -260,6 +260,13 @@ function esc(str) {
   return String(str)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;');
+}
+
+function allowSafeHtml(str) {
+  if (!str) return '';
+  let escaped = esc(str);
+  // Revert specific safe formatting tags back to HTML
+  return escaped.replace(/&lt;(b|i|em|strong|u|br|sup|sub|h1|h2|h3|h4|h5|h6|big|small|p|\/b|\/i|\/em|\/strong|\/u|\/sup|\/sub|\/h1|\/h2|\/h3|\/h4|\/h5|\/h6|\/big|\/small|\/p)&gt;/gi, '<$1>');
 }
 
 // ── Intersection observer for fade-in ─────────────────────────────────
