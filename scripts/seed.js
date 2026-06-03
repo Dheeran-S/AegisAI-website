@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const fs = require('fs');
 const path = require('path');
 
-const DB = process.env.DB_NAME || 'aegisai_conf';
+const DB = process.env.DB_NAME || 'aegisai';
 
 // ── All seed data as plain JS objects (no encoding issues) ──────────
 const PAGES = [
@@ -163,14 +163,9 @@ async function seed() {
     port: parseInt(process.env.DB_PORT) || 3306,
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
-    database: 'mysql',
+    database: process.env.DB_NAME || 'aegisai',
     multipleStatements: true,
-    charset: 'utf8mb4',
-
-    ssl: {
-      minVersion: 'TLSv1.2',
-      rejectUnauthorized: true
-    }
+    charset: 'utf8mb4'
   });
 
   console.log('Connected to MySQL');
