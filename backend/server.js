@@ -20,6 +20,7 @@ app.use('/api/pages', require('./routes/pages'));
 app.use('/api/sections', require('./routes/sections'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/settings', require('./routes/settings'));
+app.use('/api/images', require('./routes/images'));
 
 // SPA fallbacks — admin
 app.get('/admin', (_, res) => res.sendFile(path.join(__dirname, '../admin/dashboard.html')));
