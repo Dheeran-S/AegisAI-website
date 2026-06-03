@@ -20,6 +20,19 @@ async function loadNav(activeSlug) {
   }
 }
 
+async function loadGlobalSettings() {
+  try {
+    const res = await fetch('/api/settings');
+    const settings = await res.json();
+    const footer = document.querySelector('footer');
+    if (footer && settings.footer_note) {
+      footer.innerHTML = allowSafeHtml(settings.footer_note);
+    }
+  } catch (e) {
+    console.warn('Failed to load settings', e);
+  }
+}
+
 async function loadPage(slug, targetId) {
   const target = document.getElementById(targetId);
   if (!target) return;

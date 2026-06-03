@@ -43,6 +43,7 @@
     const slug = qSlug || rawPath || 'home';
 
     loadNav(slug);
+    loadGlobalSettings();
 
     (async () => {
       try {

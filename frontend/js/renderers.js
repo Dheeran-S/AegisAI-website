@@ -264,9 +264,7 @@ function esc(str) {
 
 function allowSafeHtml(str) {
   if (!str) return '';
-  let escaped = esc(str);
-  // Revert specific safe formatting tags back to HTML
-  return escaped.replace(/&lt;(b|i|em|strong|u|br|sup|sub|h1|h2|h3|h4|h5|h6|big|small|p|\/b|\/i|\/em|\/strong|\/u|\/sup|\/sub|\/h1|\/h2|\/h3|\/h4|\/h5|\/h6|\/big|\/small|\/p)&gt;/gi, '<$1>');
+  return String(str);
 }
 
 // ── Intersection observer for fade-in ─────────────────────────────────
