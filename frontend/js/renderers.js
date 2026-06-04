@@ -11,7 +11,6 @@ function renderHero(data) {
         <h2 class="hero-fullname">${allowSafeHtml(data.tagline).replace('Secure and Intelligent', '<br>Secure & Intelligent')}</h2>
         <div class="hero-center-actions-stacked">
           <a href="/cfp" class="btn btn-pill btn-primary">Call for Papers</a>
-          <a href="/about" class="btn btn-pill btn-glass">Learn More</a>
         </div>
       </div>
     </div>
