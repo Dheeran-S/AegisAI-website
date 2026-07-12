@@ -862,8 +862,8 @@ body {
   border-radius: var(--radius);
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: .75rem;
+  gap: 1.25rem;
+  padding: 1.25rem;
   transition: var(--transition);
   box-shadow: var(--shadow-sm);
 }

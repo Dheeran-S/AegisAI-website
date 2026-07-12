@@ -60,6 +60,21 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
+// PUT /api/pages/reorder (admin)
+router.put('/reorder', auth, async (req, res) => {
+  const { order } = req.body;
+  if (!Array.isArray(order)) return res.status(400).json({ error: 'order must be an array of IDs' });
+  
+  try {
+    for (let i = 0; i < order.length; i++) {
+      await db.query('UPDATE pages SET nav_order = ? WHERE id = ?', [i, order[i]]);
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // GET /api/pages/:slug — full page with sections (public) — must be last
 router.get('/:slug', async (req, res) => {
   try {
