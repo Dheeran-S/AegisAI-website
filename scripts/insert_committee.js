@@ -14,21 +14,21 @@ async function main() {
     console.log('Connecting to database...');
     
     // Check if page already exists
-    const [existing] = await pool.query('SELECT id FROM pages WHERE slug = ?', ['commitie']);
+    const [existing] = await pool.query('SELECT id FROM pages WHERE slug = ?', ['committee']);
     let pageId;
     
     if (existing.length > 0) {
-      console.log('Page "commitie" already exists, deleting existing sections...');
+      console.log('Page "committee" already exists, deleting existing sections...');
       pageId = existing[0].id;
       await pool.query('DELETE FROM sections WHERE page_id = ?', [pageId]);
     } else {
-      console.log('Creating new page "commitie"...');
+      console.log('Creating new page "committee"...');
       const [maxOrder] = await pool.query('SELECT MAX(nav_order) as m FROM pages');
       const navOrder = (maxOrder[0].m || 0) + 1;
       
       const [result] = await pool.query(
         'INSERT INTO pages (slug, title, meta_description, nav_order) VALUES (?, ?, ?, ?)',
-        ['commitie', 'Committee', 'AegisAI 2027 Committee Members', navOrder]
+        ['committee', 'Committee', 'AegisAI 2027 Committee Members', navOrder]
       );
       pageId = result.insertId;
     }
