@@ -115,10 +115,10 @@ const SECTIONS = [
   // COMMITTEE
   ['committee', 'committee_group', 1, {
     groups: [
-      { role: 'General Chair', members: [{ name: 'To Be Announced', affiliation: 'Shiv Nadar University Chennai' }] },
-      { role: 'Program Committee Chairs', members: [{ name: 'To Be Announced', affiliation: 'TBA' }, { name: 'To Be Announced', affiliation: 'TBA' }] },
-      { role: 'Technical Program Committee', members: [{ name: 'To Be Announced', affiliation: 'TBA' }, { name: 'To Be Announced', affiliation: 'TBA' }, { name: 'To Be Announced', affiliation: 'TBA' }, { name: 'To Be Announced', affiliation: 'TBA' }] },
-      { role: 'Advisory Board', members: [{ name: 'To Be Announced', affiliation: 'TBA' }, { name: 'To Be Announced', affiliation: 'TBA' }] }
+      { role: 'General Chair', members: [{ name: 'To Be Announced', affiliation: 'Shiv Nadar University Chennai', photo_url: '' }] },
+      { role: 'Program Committee Chairs', members: [{ name: 'To Be Announced', affiliation: 'TBA', photo_url: '' }, { name: 'To Be Announced', affiliation: 'TBA', photo_url: '' }] },
+      { role: 'Technical Program Committee', members: [{ name: 'To Be Announced', affiliation: 'TBA', photo_url: '' }, { name: 'To Be Announced', affiliation: 'TBA', photo_url: '' }, { name: 'To Be Announced', affiliation: 'TBA', photo_url: '' }, { name: 'To Be Announced', affiliation: 'TBA', photo_url: '' }] },
+      { role: 'Advisory Board', members: [{ name: 'To Be Announced', affiliation: 'TBA', photo_url: '' }, { name: 'To Be Announced', affiliation: 'TBA', photo_url: '' }] }
     ]
   }],
 

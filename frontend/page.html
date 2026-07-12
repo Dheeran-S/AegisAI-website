@@ -23,15 +23,14 @@
   </nav>
 
   <div class="page-wrap">
-    <div class="page-header" id="page-header" style="display:none">
-      <div class="breadcrumb"><a href="/">Home</a> / <span id="breadcrumb-title"></span></div>
-      <h1 id="page-heading">Loading…</h1>
-    </div>
+
     <div id="page-content"></div>
   </div>
 
   <footer>
-    <strong>AegisAI 2027</strong> — Shiv Nadar University Chennai &nbsp;|&nbsp; 25–27 March 2027
+    <div id="footer-dynamic-note">
+      <strong>AegisAI 2027</strong> — Shiv Nadar University Chennai &nbsp;|&nbsp; 25–27 March 2027
+    </div>
   </footer>
 
   <script src="/js/renderers.js"></script>
@@ -54,12 +53,7 @@
         document.title = page.title + ' — AegisAI 2027';
         document.querySelector('meta[name="description"]').content = page.meta_description || '';
 
-        // Show breadcrumb for all non-home pages
-        if (slug !== 'home') {
-          document.getElementById('page-header').style.display = 'block';
-          document.getElementById('page-heading').textContent = page.title;
-          document.getElementById('breadcrumb-title').textContent = page.title;
-        }
+
 
         // Special handling: contact page injects a form alongside contact_info
         if (slug === 'contact') {

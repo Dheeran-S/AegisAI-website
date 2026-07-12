@@ -159,11 +159,21 @@ function renderSpeakerGrid(data) {
 
 function renderCommitteeGroup(data) {
   const groups = (data.groups || []).map(g => {
-    const members = (g.members || []).map(m => `
-      <div class="committee-member">
-        <div class="member-name">${allowSafeHtml(m.name)}</div>
-        <div class="member-affil">${allowSafeHtml(m.affiliation)}</div>
-      </div>`).join('');
+    const membersArr = Array.isArray(g.members) ? g.members : [];
+    const members = membersArr.map(m => {
+      const initials = m.name === 'To Be Announced' ? '?' : m.name.split(' ').map(w=>w[0]).join('').slice(0,2);
+      const avatar = m.photo_url
+        ? `<img src="${esc(m.photo_url)}" alt="${esc(m.name)}">`
+        : `<div class="committee-avatar-initials">${esc(initials)}</div>`;
+      return `
+      <div class="committee-member fade-in">
+        <div class="committee-avatar">${avatar}</div>
+        <div class="committee-body">
+          <div class="member-name">${allowSafeHtml(m.name)}</div>
+          <div class="member-affil">${allowSafeHtml(m.affiliation)}</div>
+        </div>
+      </div>`;
+    }).join('');
     return `
     <div class="fade-in">
       <div class="committee-role-title">${allowSafeHtml(g.role)}</div>

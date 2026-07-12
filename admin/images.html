@@ -92,6 +92,7 @@
   <main class="admin-main">
     <div class="topbar">
       <h1>Image Gallery</h1>
+      <button class="btn-a btn-ghost-a btn-sm" id="close-iframe-btn" style="display:none;" onclick="window.parent.closePhotoSidebar()">✕ Close</button>
     </div>
     
     <div id="upload-msg"></div>
@@ -218,6 +219,13 @@ async function deleteImage(filename) {
 }
 
 loadImages();
+
+if (window.self !== window.top) {
+  document.querySelector('.sidebar').style.display = 'none';
+  document.querySelector('.admin-main').style.marginLeft = '0';
+  const closeBtn = document.getElementById('close-iframe-btn');
+  if (closeBtn) closeBtn.style.display = 'inline-block';
+}
 </script>
 </body>
 </html>

@@ -24,9 +24,14 @@ async function loadGlobalSettings() {
   try {
     const res = await fetch('/api/settings');
     const settings = await res.json();
-    const footer = document.querySelector('footer');
-    if (footer && settings.footer_note) {
-      footer.innerHTML = allowSafeHtml(settings.footer_note);
+    const dynamicNote = document.getElementById('footer-dynamic-note');
+    if (dynamicNote && settings.footer_note) {
+      dynamicNote.innerHTML = allowSafeHtml(settings.footer_note);
+    } else {
+      const footer = document.querySelector('footer');
+      if (footer && settings.footer_note) {
+        footer.innerHTML = allowSafeHtml(settings.footer_note);
+      }
     }
   } catch (e) {
     console.warn('Failed to load settings', e);

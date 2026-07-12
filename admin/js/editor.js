@@ -299,10 +299,11 @@ function committeeForm(d, id) {
         <button class="btn-a btn-danger-a btn-sm" onclick="removeArrItem(this)">✕ Role</button>
       </div>
       <div style="padding-left:1rem">
-        ${(g.members||[]).map((m,mi)=>`
-          <div style="display:flex;gap:.5rem;margin-bottom:.4rem">
-            <input class="form-input-a" placeholder="Name" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="name" value="${escAttr(m.name)}">
-            <input class="form-input-a" placeholder="Affiliation" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="affiliation" value="${escAttr(m.affiliation)}">
+        ${(Array.isArray(g.members) ? g.members : []).map((m,mi)=>`
+          <div style="display:flex;gap:.5rem;margin-bottom:.4rem;flex-wrap:wrap">
+            <input class="form-input-a" style="flex:1;min-width:150px;" placeholder="Name" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="name" value="${escAttr(m.name)}">
+            <input class="form-input-a" style="flex:1;min-width:150px;" placeholder="Affiliation" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="affiliation" value="${escAttr(m.affiliation)}">
+            <input class="form-input-a" style="flex:1;min-width:150px;" placeholder="Photo URL (optional)" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="photo_url" value="${escAttr(m.photo_url||'')}">
             <button class="btn-a btn-danger-a btn-sm" onclick="removeMember(this)">✕</button>
           </div>`).join('')}
         <button class="array-add-btn" style="border-top:1px dashed var(--border)" onclick="addMember(this,${gi},${id})">+ Add Member</button>
@@ -382,10 +383,11 @@ function addMember(btn, gi, id) {
   const wrap = btn.parentElement;
   const mi   = wrap.querySelectorAll('div[style*="margin-bottom"]').length;
   const div  = document.createElement('div');
-  div.style.cssText = 'display:flex;gap:.5rem;margin-bottom:.4rem';
+  div.style.cssText = 'display:flex;gap:.5rem;margin-bottom:.4rem;flex-wrap:wrap';
   div.innerHTML = `
-    <input class="form-input-a" placeholder="Name" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="name" value="To Be Announced">
-    <input class="form-input-a" placeholder="Affiliation" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="affiliation" value="TBA">
+    <input class="form-input-a" style="flex:1;min-width:150px;" placeholder="Name" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="name" value="To Be Announced">
+    <input class="form-input-a" style="flex:1;min-width:150px;" placeholder="Affiliation" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="affiliation" value="TBA">
+    <input class="form-input-a" style="flex:1;min-width:150px;" placeholder="Photo URL (optional)" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="photo_url" value="">
     <button class="btn-a btn-danger-a btn-sm" onclick="removeMember(this)">✕</button>`;
   wrap.insertBefore(div, btn);
 }
