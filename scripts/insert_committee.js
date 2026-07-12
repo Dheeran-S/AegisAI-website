@@ -40,15 +40,15 @@ async function main() {
         {
           role: "General Chair",
           members: [
-            { name: "Dr. T. Nagarajan", affiliation: "Professor, Computer Science and Engineering, Shiv Nadar University Chennai" }
+            { name: "Dr. T. Nagarajan", affiliation: "Professor, Computer Science and Engineering<br>Shiv Nadar University Chennai" }
           ]
         },
         {
           role: "General Co-Chairs",
           members: [
-            { name: "Dr. Jiji C V", affiliation: "Professor, Computer Science and Engineering, Shiv Nadar University Chennai" },
-            { name: "Dr. S. Chandrakala", affiliation: "Professor, Computer Science and Engineering, Shiv Nadar University Chennai" },
-            { name: "Dr. Sakthi Balan Muthiah", affiliation: "Professor, Computer Science and Engineering, Shiv Nadar University Chennai" }
+            { name: "Dr. Jiji C V", affiliation: "Professor, Computer Science and Engineering<br>Shiv Nadar University Chennai" },
+            { name: "Dr. S. Chandrakala", affiliation: "Professor, Computer Science and Engineering<br>Shiv Nadar University Chennai" },
+            { name: "Dr. Sakthi Balan Muthiah", affiliation: "Professor, Computer Science and Engineering<br>Shiv Nadar University Chennai" }
           ]
         }
       ]
@@ -59,10 +59,10 @@ async function main() {
         {
           role: "Convenors",
           members: [
-            { name: "Dr. Rourab Paul", affiliation: "Assistant Professor, Computer Science and Engineering, Shiv Nadar University Chennai" },
-            { name: "Dr. Nimisha Ghosh", affiliation: "Assistant Professor, Computer Science and Engineering, Shiv Nadar University Chennai" },
-            { name: "Dr. Priya G. L.", affiliation: "Assistant Professor, Computer Science and Engineering, Shiv Nadar University Chennai" },
-            { name: "Dr. Debajyoti Biswas", affiliation: "Assistant Professor, Computer Science and Engineering, Shiv Nadar University Chennai" }
+            { name: "Dr. Rourab Paul", affiliation: "Assistant Professor, Computer Science and Engineering<br>Shiv Nadar University Chennai" },
+            { name: "Dr. Nimisha Ghosh", affiliation: "Assistant Professor, Computer Science and Engineering<br>Shiv Nadar University Chennai" },
+            { name: "Dr. Priya G. L.", affiliation: "Assistant Professor, Computer Science and Engineering<br>Shiv Nadar University Chennai" },
+            { name: "Dr. Debajyoti Biswas", affiliation: "Assistant Professor, Computer Science and Engineering<br>Shiv Nadar University Chennai" }
           ]
         }
       ]
@@ -73,14 +73,14 @@ async function main() {
         {
           role: "Technical Program Committee",
           members: [
-            { name: "Prof. Marco Danelutto", affiliation: "Professor, Dept. of Computer Science, University of Pisa, Italy" },
-            { name: "Prof. Sandeep Shukla", affiliation: "Professor, Director, International Institute of Information Technology (IIIT) Hyderabad" },
-            { name: "Prof. Amlan Chakrabarti", affiliation: "Professor, Director, School of IT,University of Calcutta " },
-            { name: "Dr. Krishnendu Guha", affiliation: "Assistant Professor, School of Computer Science and Information Technology, University College Cork (UCC), Ireland" },
-            { name: "Dr. Santhi Natarajan", affiliation: "Associate Professor, Computer Science and Engineering,Shiv Nadar University Chennai" },
-            { name: "Dr. K.B. Sundhara Kumar", affiliation: "Associate Professor, Computer Science and Engineering,Shiv Nadar University Chennai" },
-            { name: "Dr. S. Vidhusha", affiliation: "Associate Professor, Computer Science and Engineering,Shiv Nadar University Chennai" },
-            { name: "Dr. S. Veeramani", affiliation: "Associate Professor, Computer Science and Engineering,Shiv Nadar University Chennai" }
+            { name: "Prof. Marco Danelutto", affiliation: "Professor, Dept. of Computer Science<br>University of Pisa, Italy" },
+            { name: "Prof. Sandeep Shukla", affiliation: "Professor, Director<br>International Institute of Information Technology (IIIT) Hyderabad" },
+            { name: "Prof. Amlan Chakrabarti", affiliation: "Professor, Director, School of IT<br>University of Calcutta" },
+            { name: "Dr. Krishnendu Guha", affiliation: "Assistant Professor, School of Computer Science and Information Technology<br>University College Cork (UCC), Ireland" },
+            { name: "Dr. Santhi Natarajan", affiliation: "Associate Professor, Computer Science and Engineering<br>Shiv Nadar University Chennai" },
+            { name: "Dr. K.B. Sundhara Kumar", affiliation: "Associate Professor, Computer Science and Engineering<br>Shiv Nadar University Chennai" },
+            { name: "Dr. S. Vidhusha", affiliation: "Associate Professor, Computer Science and Engineering<br>Shiv Nadar University Chennai" },
+            { name: "Dr. S. Veeramani", affiliation: "Associate Professor, Computer Science and Engineering<br>Shiv Nadar University Chennai" }
           ]
         }
       ]
