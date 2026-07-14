@@ -428,7 +428,18 @@ function collectFormData(sectionId) {
   });
 
   // Filter nulls from arrays
-  Object.entries(arrays).forEach(([k,v]) => { data[k] = v.filter(Boolean); });
+  Object.entries(arrays).forEach(([k,v]) => { 
+    data[k] = v.filter(Boolean); 
+    data[k].forEach(item => {
+      if (item && typeof item === 'object') {
+        Object.keys(item).forEach(subK => {
+          if (Array.isArray(item[subK])) {
+            item[subK] = item[subK].filter(Boolean);
+          }
+        });
+      }
+    });
+  });
   return data;
 }
 

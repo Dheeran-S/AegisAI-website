@@ -159,7 +159,7 @@ function renderSpeakerGrid(data) {
 
 function renderCommitteeGroup(data) {
   const groups = (data.groups || []).map(g => {
-    const membersArr = Array.isArray(g.members) ? g.members : [];
+    const membersArr = Array.isArray(g.members) ? g.members.filter(Boolean) : [];
     const members = membersArr.map(m => {
       const initials = m.name === 'To Be Announced' ? '?' : m.name.split(' ').map(w=>w[0]).join('').slice(0,2);
       const avatar = m.photo_url
