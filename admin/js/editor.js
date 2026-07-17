@@ -29,24 +29,36 @@ function renderSectionList(sections) {
     const card = document.createElement('div');
     card.className = 'section-card';
     card.id = 'sc-' + s.id;
-    card.innerHTML = `
-      <div class="section-card-header" onclick="toggleSection(${s.id})">
-        <span class="section-type-badge">${s.type.replace(/_/g,' ')}</span>
-        <span class="section-card-title">${sectionTitle(s)}</span>
-        <div class="section-card-controls">
-          ${i > 0 ? `<button class="btn-a btn-ghost-a btn-sm" onclick="event.stopPropagation();moveSection(${s.id},'up')">↑</button>` : ''}
-          ${i < sections.length-1 ? `<button class="btn-a btn-ghost-a btn-sm" onclick="event.stopPropagation();moveSection(${s.id},'down')">↓</button>` : ''}
-          <button class="btn-a btn-accent-a btn-sm" onclick="event.stopPropagation();toggleSection(${s.id})">Edit</button>
-          <button class="btn-a btn-danger-a btn-sm" onclick="event.stopPropagation();deleteSection(${s.id},'${s.type}')">Delete</button>
+    try {
+      card.innerHTML = `
+        <div class="section-card-header" onclick="toggleSection(${s.id})">
+          <span class="section-type-badge">${s.type.replace(/_/g,' ')}</span>
+          <span class="section-card-title">${sectionTitle(s)}</span>
+          <div class="section-card-controls">
+            ${i > 0 ? `<button class="btn-a btn-ghost-a btn-sm" onclick="event.stopPropagation();moveSection(${s.id},'up')">↑</button>` : ''}
+            ${i < sections.length-1 ? `<button class="btn-a btn-ghost-a btn-sm" onclick="event.stopPropagation();moveSection(${s.id},'down')">↓</button>` : ''}
+            <button class="btn-a btn-accent-a btn-sm" onclick="event.stopPropagation();toggleSection(${s.id})">Edit</button>
+            <button class="btn-a btn-danger-a btn-sm" onclick="event.stopPropagation();deleteSection(${s.id},'${s.type}')">Delete</button>
+          </div>
         </div>
-      </div>
-      <div class="section-card-body" id="body-${s.id}">
-        ${buildForm(s)}
-        <div style="margin-top:1rem;display:flex;gap:.75rem;align-items:center">
-          <button class="btn-a btn-primary-a" onclick="saveSection(${s.id})">Save Changes</button>
-          <span class="alert" id="msg-${s.id}" style="display:none;margin:0"></span>
-        </div>
-      </div>`;
+        <div class="section-card-body" id="body-${s.id}">
+          ${buildForm(s)}
+          <div style="margin-top:1rem;display:flex;gap:.75rem;align-items:center">
+            <button class="btn-a btn-primary-a" onclick="saveSection(${s.id})">Save Changes</button>
+            <span class="alert" id="msg-${s.id}" style="display:none;margin:0"></span>
+          </div>
+        </div>`;
+    } catch (err) {
+      console.error(`Failed to render section ${s.id} (${s.type}):`, err);
+      card.innerHTML = `
+        <div class="section-card-header">
+          <span class="section-type-badge">${s.type.replace(/_/g,' ')}</span>
+          <span class="section-card-title" style="color:var(--danger)">⚠ Render error — ${err.message}</span>
+          <div class="section-card-controls">
+            <button class="btn-a btn-danger-a btn-sm" onclick="deleteSection(${s.id},'${s.type}')">Delete</button>
+          </div>
+        </div>`;
+    }
     container.appendChild(card);
   });
 
@@ -292,23 +304,27 @@ function speakerGridForm(d, id) {
 }
 
 function committeeForm(d, id) {
-  const groups = (d.groups||[]).map((g,gi)=>`
+  const groups = (d.groups||[]).filter(Boolean).map((g,gi)=>{
+    const safeMembers = (Array.isArray(g.members) ? g.members : []).filter(Boolean);
+    const memberHtml = safeMembers.map((m,mi)=>`
+          <div style="display:flex;gap:.5rem;margin-bottom:.4rem;flex-wrap:wrap">
+            <input class="form-input-a" style="flex:1;min-width:150px;" placeholder="Name" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="name" value="${escAttr(m.name||'')}">
+            <input class="form-input-a" style="flex:1;min-width:150px;" placeholder="Affiliation" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="affiliation" value="${escAttr(m.affiliation||'')}">
+            <input class="form-input-a" style="flex:1;min-width:150px;" placeholder="Photo URL (optional)" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="photo_url" value="${escAttr(m.photo_url||'')}">
+            <button class="btn-a btn-danger-a btn-sm" onclick="removeMember(this)">✕</button>
+          </div>`).join('');
+    return `
     <div class="array-item" style="flex-direction:column;gap:.75rem">
       <div style="display:flex;gap:.5rem;align-items:center">
-        <input class="form-input-a" placeholder="Role (e.g. General Chair)" data-arr="groups" data-idx="${gi}" data-key="role" value="${escAttr(g.role)}" style="flex:1">
+        <input class="form-input-a" placeholder="Role (e.g. General Chair)" data-arr="groups" data-idx="${gi}" data-key="role" value="${escAttr(g.role||'')}" style="flex:1">
         <button class="btn-a btn-danger-a btn-sm" onclick="removeArrItem(this)">✕ Role</button>
       </div>
       <div style="padding-left:1rem">
-        ${(Array.isArray(g.members) ? g.members : []).map((m,mi)=>`
-          <div style="display:flex;gap:.5rem;margin-bottom:.4rem;flex-wrap:wrap">
-            <input class="form-input-a" style="flex:1;min-width:150px;" placeholder="Name" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="name" value="${escAttr(m.name)}">
-            <input class="form-input-a" style="flex:1;min-width:150px;" placeholder="Affiliation" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="affiliation" value="${escAttr(m.affiliation)}">
-            <input class="form-input-a" style="flex:1;min-width:150px;" placeholder="Photo URL (optional)" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="photo_url" value="${escAttr(m.photo_url||'')}">
-            <button class="btn-a btn-danger-a btn-sm" onclick="removeMember(this)">✕</button>
-          </div>`).join('')}
+        ${memberHtml}
         <button class="array-add-btn" style="border-top:1px dashed var(--border)" onclick="addMember(this,${gi},${id})">+ Add Member</button>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   return `<div class="form-group-a"><label class="form-label-a">Committee Groups</label>
     <div class="array-editor" id="arr-groups-${id}">${groups}</div>
     <button class="array-add-btn" onclick="addGroup(${id})">+ Add Group</button></div>`;
