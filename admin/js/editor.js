@@ -353,7 +353,12 @@ function addSocial(id)    { addStrItem(`arr-socials-${id}`, 'socials', {platform
 
 function addStrItem(containerId, arrKey, defaults) {
   const container = document.getElementById(containerId);
-  const i = container.querySelectorAll('.array-item').length;
+  let maxIdx = -1;
+  container.querySelectorAll(`[data-arr="${arrKey}"]`).forEach(el => {
+    const idx = parseInt(el.dataset.idx, 10);
+    if (!isNaN(idx) && idx > maxIdx) maxIdx = idx;
+  });
+  const i = maxIdx + 1;
   const div = document.createElement('div');
   div.className = 'array-item';
   const fields = Object.entries(defaults).map(([k,v])=>`
@@ -365,7 +370,12 @@ function addStrItem(containerId, arrKey, defaults) {
 
 function addGroup(id) {
   const container = document.getElementById(`arr-groups-${id}`);
-  const gi = container.querySelectorAll('.array-item').length;
+  let maxIdx = -1;
+  container.querySelectorAll(`[data-arr="groups"]`).forEach(el => {
+    const idx = parseInt(el.dataset.idx, 10);
+    if (!isNaN(idx) && idx > maxIdx) maxIdx = idx;
+  });
+  const gi = maxIdx + 1;
   const div = document.createElement('div');
   div.className = 'array-item'; div.style.flexDirection = 'column'; div.style.gap = '.75rem';
   div.innerHTML = `
@@ -381,7 +391,12 @@ function addGroup(id) {
 
 function addMember(btn, gi, id) {
   const wrap = btn.parentElement;
-  const mi   = wrap.querySelectorAll('div[style*="margin-bottom"]').length;
+  let maxSidx = -1;
+  wrap.querySelectorAll(`[data-sub="members"]`).forEach(el => {
+    const sidx = parseInt(el.dataset.sidx, 10);
+    if (!isNaN(sidx) && sidx > maxSidx) maxSidx = sidx;
+  });
+  const mi = maxSidx + 1;
   const div  = document.createElement('div');
   div.style.cssText = 'display:flex;gap:.5rem;margin-bottom:.4rem;flex-wrap:wrap';
   div.innerHTML = `
