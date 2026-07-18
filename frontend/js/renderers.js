@@ -160,16 +160,21 @@ function renderSpeakerGrid(data) {
 function renderCommitteeGroup(data) {
   const groups = (data.groups || []).map(g => {
     const membersArr = Array.isArray(g.members) ? g.members.filter(Boolean) : [];
+    const noAvatarGridClass = g.hide_avatar ? ' committee-members-no-avatar' : '';
     const members = membersArr.map(m => {
       const initials = m.name === 'To Be Announced' ? '?' : m.name.split(' ').map(w=>w[0]).join('').slice(0,2);
       const avatar = m.photo_url
         ? `<img src="${esc(m.photo_url)}" alt="${esc(m.name)}">`
         : `<div class="committee-avatar-initials">${esc(initials)}</div>`;
+      const avatarHtml = g.hide_avatar ? '' : `<div class="committee-avatar">${avatar}</div>`;
+      const noAvatarClass = g.hide_avatar ? ' committee-member-no-avatar' : '';
+      const separator = `<div class="member-separator"></div>`;
       return `
-      <div class="committee-member fade-in">
-        <div class="committee-avatar">${avatar}</div>
+      <div class="committee-member fade-in${noAvatarClass}">
+        ${avatarHtml}
         <div class="committee-body">
           <div class="member-name">${allowSafeHtml(m.name)}</div>
+          ${separator}
           <div class="member-affil">${allowSafeHtml(m.affiliation)}</div>
         </div>
       </div>`;
@@ -177,16 +182,15 @@ function renderCommitteeGroup(data) {
     return `
     <div class="fade-in">
       <div class="committee-role-title">${allowSafeHtml(g.role)}</div>
-      <div class="committee-members">${members}</div>
+      <div class="committee-members${noAvatarGridClass}">${members}</div>
     </div>`;
   }).join('');
   return `
   <section class="section">
-    <div class="container">
-      <div class="committee-groups">${groups}</div>
-    </div>
+    <div class="committee-groups">${groups}</div>
   </section>`;
 }
+
 
 function renderMapEmbed(data) {
   const mapHtml = data.map_url

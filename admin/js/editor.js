@@ -317,6 +317,9 @@ function committeeForm(d, id) {
     <div class="array-item" style="flex-direction:column;gap:.75rem">
       <div style="display:flex;gap:.5rem;align-items:center">
         <input class="form-input-a" placeholder="Role (e.g. General Chair)" data-arr="groups" data-idx="${gi}" data-key="role" value="${escAttr(g.role||'')}" style="flex:1">
+        <label style="font-size:0.85rem;display:flex;align-items:center;gap:.25rem">
+          <input type="checkbox" data-arr="groups" data-idx="${gi}" data-key="hide_avatar" ${g.hide_avatar ? 'checked' : ''}> Hide Profile Pictures
+        </label>
         <button class="btn-a btn-danger-a btn-sm" onclick="removeArrItem(this)">✕ Role</button>
       </div>
       <div style="padding-left:1rem">
@@ -397,6 +400,9 @@ function addGroup(id) {
   div.innerHTML = `
     <div style="display:flex;gap:.5rem;align-items:center">
       <input class="form-input-a" placeholder="Role" data-arr="groups" data-idx="${gi}" data-key="role" value="New Role" style="flex:1">
+      <label style="font-size:0.85rem;display:flex;align-items:center;gap:.25rem">
+        <input type="checkbox" data-arr="groups" data-idx="${gi}" data-key="hide_avatar"> Hide Profile Pictures
+      </label>
       <button class="btn-a btn-danger-a btn-sm" onclick="removeArrItem(this)">✕ Role</button>
     </div>
     <div style="padding-left:1rem">
@@ -431,8 +437,9 @@ function collectFormData(sectionId) {
   // Simple fields
   card.querySelectorAll('[data-field]').forEach(el => {
     const key = el.dataset.field;
+    let val = el.type === 'checkbox' ? el.checked : el.value;
     if (key === '__raw') { try { Object.assign(data, JSON.parse(el.value)); } catch {} }
-    else data[key] = el.value;
+    else data[key] = val;
   });
 
   // Array fields — group by arr key
@@ -443,6 +450,7 @@ function collectFormData(sectionId) {
     const key  = el.dataset.key;
     const sub  = el.dataset.sub;
     const sidx = el.dataset.sidx !== undefined ? parseInt(el.dataset.sidx) : null;
+    let val = el.type === 'checkbox' ? el.checked : el.value;
 
     if (!arrays[arr]) arrays[arr] = [];
     if (!arrays[arr][idx]) arrays[arr][idx] = {};
@@ -450,11 +458,11 @@ function collectFormData(sectionId) {
     if (sub && sidx !== null) {
       if (!arrays[arr][idx][sub]) arrays[arr][idx][sub] = [];
       if (!arrays[arr][idx][sub][sidx]) arrays[arr][idx][sub][sidx] = {};
-      arrays[arr][idx][sub][sidx][key] = el.value;
+      arrays[arr][idx][sub][sidx][key] = val;
     } else if (key === '__str') {
-      arrays[arr][idx] = el.value;
+      arrays[arr][idx] = val;
     } else {
-      arrays[arr][idx][key] = el.value;
+      arrays[arr][idx][key] = val;
     }
   });
 

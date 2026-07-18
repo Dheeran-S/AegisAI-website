@@ -697,6 +697,15 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
+.topic-item ul {
+  padding-left: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.topic-item li {
+  margin-bottom: 0.25rem;
+}
+
 /* ── DATES TABLE ── */
 .dates-table {
   width: 100%;
@@ -838,6 +847,9 @@ body {
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
 .committee-role-title {
@@ -852,8 +864,13 @@ body {
 
 .committee-members {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+/* 3-col grid for groups without profile photos */
+.committee-members-no-avatar {
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .committee-member {
@@ -868,7 +885,14 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
+.committee-member-no-avatar {
+  padding: 1rem 1.25rem 1rem 1.25rem;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .committee-member:hover {
+  border-color: var(--primary);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
@@ -908,6 +932,16 @@ body {
   color: var(--primary);
   margin-bottom: .25rem;
   line-height: 1.2;
+}
+
+/* Blue separator line under name for no-avatar cards */
+.member-separator {
+  width: 28px;
+  height: 2px;
+  background: var(--primary-light);
+  border-radius: 2px;
+  margin: .4rem 0;
+  transition: background .25s ease;
 }
 
 .member-affil {
@@ -1198,5 +1232,14 @@ footer strong {
 
   .hero h1 {
     font-size: 2rem;
+  }
+
+  .committee-members,
+  .committee-members-no-avatar {
+    grid-template-columns: 1fr;
+  }
+
+  .committee-groups {
+    padding: 0 0.25rem;
   }
 }
