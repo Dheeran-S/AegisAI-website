@@ -100,6 +100,9 @@ function renderTopicsList(data) {
 }
 
 function renderDatesTable(data) {
+  const h1 = data.col1_heading || (Array.isArray(data.headers) ? data.headers[0] : null) || 'Event';
+  const h2 = data.col2_heading || (Array.isArray(data.headers) ? data.headers[1] : null) || 'Date';
+  const h3 = data.col3_heading || (Array.isArray(data.headers) ? data.headers[2] : null) || 'Note';
   const rows = (data.rows || []).map(r => `
     <tr>
       <td>${allowSafeHtml(r.event)}</td>
@@ -112,7 +115,7 @@ function renderDatesTable(data) {
       <h2 class="section-title">${allowSafeHtml(data.heading || 'Important Dates')}</h2>
       <div class="section-line"></div>
       <table class="dates-table">
-        <thead><tr><th>Event</th><th>Date</th><th>Note</th></tr></thead>
+        <thead><tr><th>${allowSafeHtml(h1)}</th><th>${allowSafeHtml(h2)}</th><th>${allowSafeHtml(h3)}</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>

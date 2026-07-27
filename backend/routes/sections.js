@@ -11,7 +11,7 @@ const DEFAULTS = {
   logo_bar:        { heading: 'Sponsors', logos: [{ name: 'Sponsor Name', placeholder: true }] },
   university_info: { heading: 'About Our Host Institution', body: 'Enter description here.', logo_text: 'SHIV NADAR\nUNIVERSITY\nCHENNAI', location: 'Chennai, Tamil Nadu, India', website_url: '#' },
   topics_list:     { heading: 'Topics of Interest', intro: 'Topics include:', topics: ['Topic 1', 'Topic 2'] },
-  dates_table:     { heading: 'Important Dates', rows: [{ event: 'New Event', date: 'TBA', note: '' }] },
+  dates_table:     { heading: 'Important Dates', col1_heading: 'Event', col2_heading: 'Date', col3_heading: 'Note', rows: [{ event: 'New Event', date: 'TBA', note: '' }] },
   submit_button:   { heading: 'Submit Your Paper', note: 'Submission details here.', label: 'Submit Now', url: '#' },
   speaker_grid:    { heading: 'Keynote Speakers', speakers: [{ name: 'To Be Announced', affiliation: 'TBA', photo_url: '', bio: '' }] },
   committee_group: { groups: [{ role: 'New Role', members: [{ name: 'To Be Announced', affiliation: 'TBA' }] }] },

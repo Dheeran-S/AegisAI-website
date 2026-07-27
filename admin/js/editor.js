@@ -260,6 +260,10 @@ function topicsForm(d, id) {
 }
 
 function datesTableForm(d, id) {
+  const col1 = d.col1_heading || (Array.isArray(d.headers) ? d.headers[0] : null) || 'Event';
+  const col2 = d.col2_heading || (Array.isArray(d.headers) ? d.headers[1] : null) || 'Date';
+  const col3 = d.col3_heading || (Array.isArray(d.headers) ? d.headers[2] : null) || 'Note';
+
   const items = (d.rows||[]).map((r,i)=>`
     <div class="array-item">
       <div class="array-item-fields">
@@ -272,6 +276,14 @@ function datesTableForm(d, id) {
       <button class="btn-a btn-danger-a btn-sm" onclick="removeArrItem(this)">✕</button>
     </div>`).join('');
   return fi('Section Heading','heading',d.heading)
+    + `<div class="form-group-a">
+        <label class="form-label-a">Column Headings</label>
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+          <input class="form-input-a" style="flex:1; min-width:120px;" placeholder="Column 1 (e.g. Event)" data-field="col1_heading" value="${escAttr(col1)}">
+          <input class="form-input-a" style="flex:1; min-width:120px;" placeholder="Column 2 (e.g. Date)" data-field="col2_heading" value="${escAttr(col2)}">
+          <input class="form-input-a" style="flex:1; min-width:120px;" placeholder="Column 3 (e.g. Note)" data-field="col3_heading" value="${escAttr(col3)}">
+        </div>
+       </div>`
     + `<div class="form-group-a"><label class="form-label-a">Date Rows</label>
        <div class="array-editor" id="arr-rows-${id}">${items}</div>
        <button class="array-add-btn" onclick="addDateRow(${id})">+ Add Row</button></div>`;

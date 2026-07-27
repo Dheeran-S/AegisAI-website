@@ -88,6 +88,9 @@ const SECTIONS = [
   }],
   ['cfp', 'dates_table', 3, {
     heading: 'Important Dates',
+    col1_heading: 'Event',
+    col2_heading: 'Date',
+    col3_heading: 'Note',
     rows: [
       { event: 'Paper Submission Deadline', date: 'TBA', note: 'Anywhere on Earth (AoE)' },
       { event: 'Notification of Acceptance', date: 'TBA', note: '' },
