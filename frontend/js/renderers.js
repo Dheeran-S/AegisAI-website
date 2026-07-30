@@ -139,7 +139,8 @@ function renderSpeakerGrid(data) {
   const cards = (data.speakers || []).map(s => {
     const initials = s.name === 'To Be Announced' ? '?' : s.name.split(' ').map(w=>w[0]).join('').slice(0,2);
     const avatar = s.photo_url
-      ? `<img src="${esc(s.photo_url)}" alt="${esc(s.name)}">`
+      ? `<img src="${esc(s.photo_url)}" alt="${esc(s.name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+         <div class="speaker-avatar-initials" style="display:none;">${esc(initials)}</div>`
       : `<div class="speaker-avatar-initials">${esc(initials)}</div>`;
     return `
     <div class="speaker-card fade-in">
@@ -168,7 +169,8 @@ function renderCommitteeGroup(data) {
     const members = membersArr.map(m => {
       const initials = m.name === 'To Be Announced' ? '?' : m.name.split(' ').map(w=>w[0]).join('').slice(0,2);
       const avatar = m.photo_url
-        ? `<img src="${esc(m.photo_url)}" alt="${esc(m.name)}">`
+        ? `<img src="${esc(m.photo_url)}" alt="${esc(m.name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+           <div class="committee-avatar-initials" style="display:none;">${esc(initials)}</div>`
         : `<div class="committee-avatar-initials">${esc(initials)}</div>`;
       const avatarHtml = g.hide_avatar ? '' : `<div class="committee-avatar">${avatar}</div>`;
       const noAvatarClass = g.hide_avatar ? ' committee-member-no-avatar' : '';

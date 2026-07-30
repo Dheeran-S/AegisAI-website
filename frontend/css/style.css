@@ -870,7 +870,7 @@ body {
 
 .committee-members {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem;
 }
 
@@ -879,14 +879,9 @@ body {
   grid-template-columns: repeat(3, 1fr);
 }
 
-.committee-members-single {
-  display: flex;
-  justify-content: center;
-}
-
+/* Places the single item in the middle column of the 3-col grid */
 .committee-members-single .committee-member {
-  width: 100%;
-  max-width: 600px;
+  grid-column: 2;
 }
 
 .committee-member {
@@ -894,9 +889,11 @@ body {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 1.25rem;
-  padding: 1.25rem;
+  text-align: center;
+  gap: 1rem;
+  padding: 1.5rem 1rem;
   transition: var(--transition);
   box-shadow: var(--shadow-sm);
 }
@@ -905,6 +902,8 @@ body {
   padding: 1rem 1.25rem 1rem 1.25rem;
   flex-direction: column;
   align-items: flex-start;
+  text-align: left;
+  gap: 1.25rem;
 }
 
 .committee-member:hover {
@@ -914,8 +913,8 @@ body {
 }
 
 .committee-avatar {
-  width: 84px;
-  height: 84px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
@@ -923,13 +922,17 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 3px solid var(--card);
+  box-shadow: 0 0 0 2px var(--accent), var(--shadow-sm);
+  margin-bottom: 0.25rem;
 }
 
 .committee-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: top;
+  object-position: center;
+  color: transparent; /* Hides alt text if image is broken */
 }
 
 .committee-avatar-initials {
@@ -953,12 +956,17 @@ body {
 
 /* Blue separator line under name for no-avatar cards */
 .member-separator {
+  display: none;
   width: 28px;
   height: 2px;
   background: var(--primary-light);
   border-radius: 2px;
   margin: .4rem 0;
   transition: background .25s ease;
+}
+
+.committee-member-no-avatar .member-separator {
+  display: block;
 }
 
 .member-affil {
@@ -1254,6 +1262,10 @@ footer strong {
   .committee-members,
   .committee-members-no-avatar {
     grid-template-columns: 1fr;
+  }
+
+  .committee-members-single .committee-member {
+    grid-column: 1;
   }
 
   .committee-groups {
