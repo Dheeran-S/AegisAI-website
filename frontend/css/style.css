@@ -874,9 +874,11 @@ body {
   gap: 1.25rem;
 }
 
-/* 3-col grid for groups without profile photos */
+/* Borderless 2-column list for groups without profile photos */
 .committee-members-no-avatar {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-top: 1px solid var(--border);
 }
 
 /* Places the single item in the middle column of the 3-col grid */
@@ -899,17 +901,30 @@ body {
 }
 
 .committee-member-no-avatar {
-  padding: 1rem 1.25rem 1rem 1.25rem;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  box-shadow: none;
+  padding: .9rem .75rem;
   flex-direction: column;
   align-items: flex-start;
   text-align: left;
-  gap: 1.25rem;
+  gap: .15rem;
 }
 
 .committee-member:hover {
   border-color: var(--primary);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+}
+
+.committee-member-no-avatar:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: transparent;
+  border-bottom-color: var(--primary);
+  background: rgba(59, 130, 246, 0.04);
 }
 
 .committee-avatar {
@@ -966,7 +981,7 @@ body {
 }
 
 .committee-member-no-avatar .member-separator {
-  display: block;
+  display: none;
 }
 
 .member-affil {
@@ -1259,7 +1274,10 @@ footer strong {
     font-size: 2rem;
   }
 
-  .committee-members,
+  .committee-members {
+    grid-template-columns: 1fr;
+  }
+
   .committee-members-no-avatar {
     grid-template-columns: 1fr;
   }
