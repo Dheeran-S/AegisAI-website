@@ -778,7 +778,7 @@ body {
 /* ── SPEAKER GRID ── */
 .speakers-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
 }
 
@@ -799,31 +799,37 @@ body {
 
 .speaker-avatar {
   width: 100%;
-  height: 180px;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  padding-top: 2rem;
+  padding-bottom: 0.5rem;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .speaker-avatar-initials {
-  width: 80px;
-  height: 80px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, .15);
-  border: 3px solid rgba(255, 255, 255, .3);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  border: 4px solid var(--card);
+  box-shadow: 0 0 0 3px var(--accent), var(--shadow-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8rem;
+  font-size: 3.5rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, .6);
+  color: #fff;
 }
 
 .speaker-avatar img {
-  width: 100%;
-  height: 100%;
+  width: 200px;
+  height: 200px;
   object-fit: cover;
+  object-position: top;
+  border-radius: 50%;
+  border: 4px solid var(--card);
+  box-shadow: 0 0 0 3px var(--accent), var(--shadow-md);
 }
 
 .speaker-body {
@@ -873,6 +879,16 @@ body {
   grid-template-columns: repeat(3, 1fr);
 }
 
+.committee-members-single {
+  display: flex;
+  justify-content: center;
+}
+
+.committee-members-single .committee-member {
+  width: 100%;
+  max-width: 600px;
+}
+
 .committee-member {
   background: var(--card);
   border: 1px solid var(--border);
@@ -913,6 +929,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: top;
 }
 
 .committee-avatar-initials {

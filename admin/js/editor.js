@@ -13,6 +13,126 @@ document.getElementById('admin-name').textContent = localStorage.getItem('aegis_
 // ── Auth header ──────────────────────────────────────────────────────
 const authHdr = () => ({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token });
 
+// ── Image Upload & Cropper ───────────────────────────────────────────
+let cropperInstance = null;
+let currentUrlInput = null;
+let currentUploadBtn = null;
+
+function initCropper(src) {
+  const modal = document.getElementById('cropper-modal');
+  const img = document.getElementById('cropper-image');
+  img.src = src;
+  modal.classList.add('open');
+  
+  if (cropperInstance) cropperInstance.destroy();
+  
+  cropperInstance = new Cropper(img, {
+    aspectRatio: 1,
+    viewMode: 1,
+    dragMode: 'move',
+    zoomable: true,
+    autoCropArea: 0.9,
+    guides: false,
+    center: true,
+    highlight: false,
+    cropBoxMovable: false,
+    cropBoxResizable: false,
+    toggleDragModeOnDblclick: false,
+    checkCrossOrigin: false
+  });
+}
+
+function handleImageUpload(btn) {
+  const fileInput = btn.previousElementSibling;
+  currentUrlInput = btn.nextElementSibling;
+  currentUploadBtn = btn;
+  
+  fileInput.click();
+  fileInput.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (event) => initCropper(event.target.result);
+    reader.readAsDataURL(file);
+    fileInput.value = '';
+  };
+}
+
+function openAdjuster(btn) {
+  const urlInput = btn.previousElementSibling;
+  if (!urlInput.value) {
+    alert("Please upload or enter an image URL first.");
+    return;
+  }
+  currentUrlInput = urlInput;
+  currentUploadBtn = btn.previousElementSibling.previousElementSibling;
+  initCropper(urlInput.value);
+}
+
+function closeCropper() {
+  document.getElementById('cropper-modal').classList.remove('open');
+  if (cropperInstance) {
+    cropperInstance.destroy();
+    cropperInstance = null;
+  }
+}
+
+function applyCrop() {
+  if (!cropperInstance) return;
+  
+  const originalText = currentUploadBtn.textContent;
+  currentUploadBtn.textContent = 'Uploading...';
+  currentUploadBtn.disabled = true;
+  
+  const btnCrop = document.getElementById('btn-crop-upload');
+  const oldCropText = btnCrop.textContent;
+  btnCrop.textContent = 'Uploading...';
+  btnCrop.disabled = true;
+  
+  cropperInstance.getCroppedCanvas({
+    width: 600,
+    height: 600
+  }).toBlob(async (blob) => {
+    if (!blob) {
+      alert("Failed to crop image.");
+      resetUploadState(originalText, oldCropText, btnCrop);
+      return;
+    }
+    const formData = new FormData();
+    formData.append('image', blob, 'avatar.jpg');
+    try {
+      const r = await fetch(API + '/images', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token },
+        body: formData
+      });
+      const res = await r.json();
+      if (res.success) {
+        currentUrlInput.value = res.url;
+        closeCropper();
+      } else {
+        alert(res.error || 'Upload failed');
+      }
+    } catch (err) {
+      alert('Network error');
+    } finally {
+      resetUploadState(originalText, oldCropText, btnCrop);
+    }
+  }, 'image/jpeg', 0.9);
+}
+
+function resetUploadState(originalText, oldCropText, btnCrop) {
+  if (currentUploadBtn) {
+    currentUploadBtn.textContent = originalText;
+    currentUploadBtn.disabled = false;
+  }
+  if (btnCrop) {
+    btnCrop.textContent = oldCropText;
+    btnCrop.disabled = false;
+  }
+}
+
 // ── Load sections ────────────────────────────────────────────────────
 async function loadSections() {
   const r = await fetch(`${API}/pages/${pageSlug}`, { headers: authHdr() });
@@ -304,7 +424,12 @@ function speakerGridForm(d, id) {
           <input class="form-input-a" placeholder="Name" data-arr="speakers" data-idx="${i}" data-key="name" value="${escAttr(s.name)}">
           <input class="form-input-a" placeholder="Affiliation" data-arr="speakers" data-idx="${i}" data-key="affiliation" value="${escAttr(s.affiliation)}">
         </div>
-        <input class="form-input-a" placeholder="Photo URL (leave blank for placeholder)" data-arr="speakers" data-idx="${i}" data-key="photo_url" value="${escAttr(s.photo_url||'')}">
+        <div style="display:flex;gap:.5rem;align-items:center;margin-top:.4rem;margin-bottom:.4rem">
+          <input type="file" style="display:none" accept="image/*">
+          <button type="button" class="btn-a btn-secondary-a btn-sm" onclick="handleImageUpload(this)">Upload Photo</button>
+          <input class="form-input-a" style="flex:1;" placeholder="Photo URL (leave blank for placeholder)" data-arr="speakers" data-idx="${i}" data-key="photo_url" value="${escAttr(s.photo_url||'')}">
+          <button type="button" class="btn-a btn-accent-a btn-sm" onclick="openAdjuster(this)">Adjust</button>
+        </div>
         <textarea class="form-textarea-a" style="min-height:60px" placeholder="Short bio" data-arr="speakers" data-idx="${i}" data-key="bio">${escVal(s.bio||'')}</textarea>
       </div>
       <button class="btn-a btn-danger-a btn-sm" onclick="removeArrItem(this)">✕</button>
@@ -319,10 +444,15 @@ function committeeForm(d, id) {
   const groups = (d.groups||[]).filter(Boolean).map((g,gi)=>{
     const safeMembers = (Array.isArray(g.members) ? g.members : []).filter(Boolean);
     const memberHtml = safeMembers.map((m,mi)=>`
-          <div style="display:flex;gap:.5rem;margin-bottom:.4rem;flex-wrap:wrap">
+          <div style="display:flex;gap:.5rem;margin-bottom:.4rem;flex-wrap:wrap;align-items:center;">
             <input class="form-input-a" style="flex:1;min-width:150px;" placeholder="Name" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="name" value="${escAttr(m.name||'')}">
             <input class="form-input-a" style="flex:1;min-width:150px;" placeholder="Affiliation" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="affiliation" value="${escAttr(m.affiliation||'')}">
-            <input class="form-input-a" style="flex:1;min-width:150px;" placeholder="Photo URL (optional)" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="photo_url" value="${escAttr(m.photo_url||'')}">
+            <div style="display:flex;gap:.5rem;flex:2;min-width:250px;">
+              <input type="file" style="display:none" accept="image/*">
+              <button type="button" class="btn-a btn-secondary-a btn-sm" onclick="handleImageUpload(this)" style="padding:.2rem .5rem">Upload</button>
+              <input class="form-input-a" style="flex:1;" placeholder="Photo URL (optional)" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="photo_url" value="${escAttr(m.photo_url||'')}">
+              <button type="button" class="btn-a btn-accent-a btn-sm" onclick="openAdjuster(this)">Adjust</button>
+            </div>
             <button class="btn-a btn-danger-a btn-sm" onclick="removeMember(this)">✕</button>
           </div>`).join('');
     return `
@@ -379,7 +509,33 @@ function addDateItem(id)  { addStrItem(`arr-dates-${id}`, 'dates', {label:'New D
 function addLogoItem(id)  { addStrItem(`arr-logos-${id}`, 'logos', {name:'Sponsor', url:'#'}); }
 function addTopicItem(id) { addStrItem(`arr-topics-${id}`, 'topics', {__str:'New Topic'}); }
 function addDateRow(id)   { addStrItem(`arr-rows-${id}`, 'rows', {event:'New Event', date:'TBA', note:''}); }
-function addSpeaker(id)   { addStrItem(`arr-speakers-${id}`, 'speakers', {name:'Speaker Name', affiliation:'University', photo_url:'', bio:''}); }
+function addSpeaker(id) {
+  const container = document.getElementById(`arr-speakers-${id}`);
+  let maxIdx = -1;
+  container.querySelectorAll(`[data-arr="speakers"]`).forEach(el => {
+    const idx = parseInt(el.dataset.idx, 10);
+    if (!isNaN(idx) && idx > maxIdx) maxIdx = idx;
+  });
+  const i = maxIdx + 1;
+  const div = document.createElement('div');
+  div.className = 'array-item';
+  div.innerHTML = `
+      <div class="array-item-fields">
+        <div class="array-item-row">
+          <input class="form-input-a" placeholder="Name" data-arr="speakers" data-idx="${i}" data-key="name" value="Speaker Name">
+          <input class="form-input-a" placeholder="Affiliation" data-arr="speakers" data-idx="${i}" data-key="affiliation" value="University">
+        </div>
+        <div style="display:flex;gap:.5rem;align-items:center;margin-top:.4rem;margin-bottom:.4rem">
+          <input type="file" style="display:none" accept="image/*">
+          <button type="button" class="btn-a btn-secondary-a btn-sm" onclick="handleImageUpload(this)">Upload Photo</button>
+          <input class="form-input-a" style="flex:1;" placeholder="Photo URL" data-arr="speakers" data-idx="${i}" data-key="photo_url" value="">
+          <button type="button" class="btn-a btn-accent-a btn-sm" onclick="openAdjuster(this)">Adjust</button>
+        </div>
+        <textarea class="form-textarea-a" style="min-height:60px" placeholder="Short bio" data-arr="speakers" data-idx="${i}" data-key="bio"></textarea>
+      </div>
+      <button class="btn-a btn-danger-a btn-sm" onclick="removeArrItem(this)">✕</button>`;
+  container.appendChild(div);
+}
 function addSocial(id)    { addStrItem(`arr-socials-${id}`, 'socials', {platform:'Twitter/X', handle:'@handle', url:'#'}); }
 
 function addStrItem(containerId, arrKey, defaults) {
@@ -432,11 +588,16 @@ function addMember(btn, gi, id) {
   });
   const mi = maxSidx + 1;
   const div  = document.createElement('div');
-  div.style.cssText = 'display:flex;gap:.5rem;margin-bottom:.4rem;flex-wrap:wrap';
+  div.style.cssText = 'display:flex;gap:.5rem;margin-bottom:.4rem;flex-wrap:wrap;align-items:center;';
   div.innerHTML = `
     <input class="form-input-a" style="flex:1;min-width:150px;" placeholder="Name" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="name" value="To Be Announced">
     <input class="form-input-a" style="flex:1;min-width:150px;" placeholder="Affiliation" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="affiliation" value="TBA">
-    <input class="form-input-a" style="flex:1;min-width:150px;" placeholder="Photo URL (optional)" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="photo_url" value="">
+    <div style="display:flex;gap:.5rem;flex:2;min-width:250px;">
+      <input type="file" style="display:none" accept="image/*">
+      <button type="button" class="btn-a btn-secondary-a btn-sm" onclick="handleImageUpload(this)" style="padding:.2rem .5rem">Upload</button>
+      <input class="form-input-a" style="flex:1;" placeholder="Photo URL (optional)" data-arr="groups" data-idx="${gi}" data-sub="members" data-sidx="${mi}" data-key="photo_url" value="">
+      <button type="button" class="btn-a btn-accent-a btn-sm" onclick="openAdjuster(this)">Adjust</button>
+    </div>
     <button class="btn-a btn-danger-a btn-sm" onclick="removeMember(this)">✕</button>`;
   wrap.insertBefore(div, btn);
 }

@@ -192,3 +192,32 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 }
 .photo-sidebar-overlay.open .photo-sidebar { right: 0; }
 .photo-sidebar iframe { flex: 1; width: 100%; border: none; }
+
+/* CROPPER MODAL */
+.cropper-modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 10000;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity .3s ease;
+}
+.cropper-modal-overlay.open { opacity: 1; pointer-events: auto; }
+.cropper-modal-content {
+  background: var(--card); border-radius: var(--radius); padding: 1.5rem;
+  width: 90%; max-width: 600px; box-shadow: var(--shadow);
+  display: flex; flex-direction: column; max-height: 90vh;
+}
+.cropper-modal-content h3 { font-size: 1.1rem; color: var(--primary); margin-bottom: 1rem; }
+.cropper-container-wrapper {
+  flex: 1; min-height: 300px; max-height: 60vh; background: #eee;
+  overflow: hidden; border-radius: 4px; margin-bottom: 1rem;
+}
+.cropper-actions { display: flex; justify-content: flex-end; gap: .75rem; }
+
+/* WHATSAPP STYLE CROPPER */
+.cropper-view-box,
+.cropper-face {
+  border-radius: 50%;
+}
+.cropper-view-box {
+  outline: 2px dashed rgba(255, 255, 255, 0.75) !important;
+  outline-color: rgba(255, 255, 255, 0.75) !important;
+}

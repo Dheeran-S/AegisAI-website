@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Editor — AegisAI Admin</title>
   <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
 </head>
 <body>
 <div class="admin-layout">
@@ -45,6 +46,22 @@
     <div id="sections-container"></div>
   </main>
 </div>
+
+<!-- Cropper Modal -->
+<div id="cropper-modal" class="cropper-modal-overlay">
+  <div class="cropper-modal-content">
+    <h3>Crop Image</h3>
+    <div class="cropper-container-wrapper">
+      <img id="cropper-image" src="" alt="To crop" style="max-width:100%; display:block;">
+    </div>
+    <div class="cropper-actions">
+      <button class="btn-a btn-ghost-a" onclick="closeCropper()">Cancel</button>
+      <button class="btn-a btn-primary-a" onclick="applyCrop()" id="btn-crop-upload">Crop & Upload</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 <script src="js/editor.js"></script>
 <script src="js/shared.js"></script>
 </body>
