@@ -59,15 +59,36 @@ function handleImageUpload(btn) {
   };
 }
 
-function openAdjuster(btn) {
+async function openAdjuster(btn) {
   const urlInput = btn.previousElementSibling;
-  if (!urlInput.value) {
+  const src = urlInput.value;
+  if (!src) {
     alert("Please upload or enter an image URL first.");
     return;
   }
   currentUrlInput = urlInput;
   currentUploadBtn = btn.previousElementSibling.previousElementSibling;
-  initCropper(urlInput.value);
+  
+  if (src.startsWith('http') && !src.includes(window.location.host)) {
+    const oldText = btn.textContent;
+    btn.textContent = 'Loading...';
+    btn.disabled = true;
+    try {
+      const r = await fetch(API + '/images/proxy?url=' + encodeURIComponent(src), {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      if (!r.ok) throw new Error('Failed to load image for cropping');
+      const blob = await r.blob();
+      initCropper(URL.createObjectURL(blob));
+    } catch (err) {
+      alert(err.message || 'Network error');
+    } finally {
+      btn.textContent = oldText;
+      btn.disabled = false;
+    }
+  } else {
+    initCropper(src);
+  }
 }
 
 function closeCropper() {

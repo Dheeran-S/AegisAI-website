@@ -4,6 +4,8 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs').promises;
 const fsSync = require('fs');
+const https = require('https');
+const http = require('http');
 const auth = require('../middleware/auth');
 
 // Ensure the images directory exists
@@ -55,6 +57,24 @@ router.get('/', auth, async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+// GET /api/images/proxy - Proxy external images to avoid CORS canvas tainting
+router.get('/proxy', auth, (req, res) => {
+  const imageUrl = req.query.url;
+  if (!imageUrl) return res.status(400).send('No URL provided');
+  
+  const client = imageUrl.startsWith('https') ? https : http;
+  
+  client.get(imageUrl, (proxyRes) => {
+    if (proxyRes.statusCode !== 200) {
+      return res.status(400).send('Failed to fetch image');
+    }
+    res.setHeader('Content-Type', proxyRes.headers['content-type'] || 'image/jpeg');
+    proxyRes.pipe(res);
+  }).on('error', (err) => {
+    res.status(500).send('Error proxying image');
+  });
 });
 
 // POST /api/images - Upload a new image (Admin)
