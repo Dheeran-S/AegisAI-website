@@ -1,11 +1,11 @@
 // ── Section Renderers ──────────────────────────────────────────────────
 
 function renderHero(data) {
-  const ifipBadge = data.ifip_event_id ? `
+  const ifipBadge = `
     <a href="https://ifip.org/" target="_blank" class="hero-flank hero-flank-left">
       <img src="/images/finalifp.png" alt="IFIP Logo" class="hero-flank-logo">
-      <span class="hero-flank-subtext">Event #${allowSafeHtml(data.ifip_event_id)}</span>
-    </a>` : '';
+      ${data.ifip_event_id ? `<span class="hero-flank-subtext">Event #${allowSafeHtml(data.ifip_event_id)}</span>` : ''}
+    </a>`;
 
   // const rightBadge = `
   //   <div class="hero-flank hero-flank-right">

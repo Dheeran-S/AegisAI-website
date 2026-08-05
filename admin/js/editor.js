@@ -336,7 +336,8 @@ function heroForm(d, id) {
     + fi('Dates','dates',d.dates)
     + fi('Institution','institution',d.institution)
     + fi('Location','location',d.location)
-    + fi('Badge Text','badge',d.badge);
+    + fi('Badge Text','badge',d.badge)
+    + fi('IFIP Event ID','ifip_event_id',d.ifip_event_id,'e.g. TC-11 · Leave blank to hide the event number under the IFIP logo');
 }
 
 function textBlockForm(d, id) {

@@ -1301,8 +1301,12 @@ footer strong {
   align-items: center;
   text-decoration: none;
   z-index: 10;
-  opacity: 0.85;
-  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.25));
+  opacity: 0.92;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 16px;
+  padding: 10px 14px;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.2));
   transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
@@ -1363,6 +1367,25 @@ footer strong {
 
 @media (max-width: 600px) {
   .hero-flank {
-    display: none;
+    position: absolute;
+    top: 15%;
+    bottom: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .hero-flank:hover {
+    transform: translateX(-50%) scale(1.05);
+  }
+
+  .hero-flank-logo {
+    height: 52px;
+  }
+
+  .hero-flank-subtext {
+    font-size: 0.65rem;
   }
 }
