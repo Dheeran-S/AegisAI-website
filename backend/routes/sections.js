@@ -5,7 +5,7 @@ const router   = express.Router();
 
 // Default data templates for each section type
 const DEFAULTS = {
-  hero:            { conference_name: 'AegisAI 2027', tagline: 'Enter tagline here', dates: 'TBA', institution: 'Shiv Nadar University Chennai', location: 'Chennai, India', badge: 'Coming Soon' },
+  hero:            { conference_name: 'AegisAI 2027', tagline: 'Enter tagline here', dates: 'TBA', institution: 'Shiv Nadar University Chennai', location: 'Chennai, India', badge: 'Coming Soon', ifip_event_id: '' },
   key_dates:       { heading: 'Key Dates', dates: [{ label: 'New Date', date: 'TBA' }] },
   text_block:      { heading: 'New Section', body: 'Enter content here.' },
   logo_bar:        { heading: 'Sponsors', logos: [{ name: 'Sponsor Name', placeholder: true }] },
@@ -36,6 +36,9 @@ router.post('/', auth, async (req, res) => {
       [page_id, type, section_order, data]
     );
     const [rows] = await db.query('SELECT * FROM sections WHERE id = ?', [result.insertId]);
+    if (typeof rows[0].data === 'string') {
+      try { rows[0].data = JSON.parse(rows[0].data); } catch(e) {}
+    }
     res.status(201).json(rows[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -47,6 +50,9 @@ router.get('/:id', auth, async (req, res) => {
   try {
     const [rows] = await db.query('SELECT * FROM sections WHERE id = ?', [req.params.id]);
     if (!rows.length) return res.status(404).json({ error: 'Section not found' });
+    if (typeof rows[0].data === 'string') {
+      try { rows[0].data = JSON.parse(rows[0].data); } catch(e) {}
+    }
     res.json(rows[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -60,6 +66,9 @@ router.patch('/:id', auth, async (req, res) => {
   try {
     await db.query('UPDATE sections SET data = ? WHERE id = ?', [JSON.stringify(data), req.params.id]);
     const [rows] = await db.query('SELECT * FROM sections WHERE id = ?', [req.params.id]);
+    if (typeof rows[0].data === 'string') {
+      try { rows[0].data = JSON.parse(rows[0].data); } catch(e) {}
+    }
     res.json(rows[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -109,6 +118,11 @@ router.get('/page/:pageId', auth, async (req, res) => {
       'SELECT * FROM sections WHERE page_id = ? ORDER BY section_order',
       [req.params.pageId]
     );
+    rows.forEach(s => {
+      if (typeof s.data === 'string') {
+        try { s.data = JSON.parse(s.data); } catch(e) {}
+      }
+    });
     res.json(rows);
   } catch (err) {
     res.status(500).json({ error: err.message });

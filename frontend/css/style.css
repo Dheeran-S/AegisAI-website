@@ -947,7 +947,8 @@ body {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  color: transparent; /* Hides alt text if image is broken */
+  color: transparent;
+  /* Hides alt text if image is broken */
 }
 
 .committee-avatar-initials {
@@ -1288,5 +1289,80 @@ footer strong {
 
   .committee-groups {
     padding: 0 0.25rem;
+  }
+}
+
+
+/* ── Flanking Hero Logos ──────────────────────────────────── */
+.hero-flank {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  z-index: 10;
+  opacity: 0.85;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.25));
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.hero-flank:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.hero-flank-left {
+  top: 110px;
+  left: 20px;
+}
+
+.hero-flank-right {
+  right: 15%;
+}
+
+.hero-flank-right .hero-flank-logo {
+  height: 150px;
+}
+
+.hero-flank-logo {
+  height: 120px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(1.1) contrast(1.05);
+}
+
+.hero-flank-subtext {
+  margin-top: 2px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+  .hero-flank-logo {
+    height: 90px;
+  }
+
+  .hero-flank-left {
+    left: 10px;
+    top: 60px;
+  }
+
+  .hero-flank-right {
+    right: 2%;
+  }
+
+  .hero-flank-subtext {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-flank {
+    display: none;
   }
 }

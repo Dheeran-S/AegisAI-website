@@ -1,10 +1,23 @@
 // ── Section Renderers ──────────────────────────────────────────────────
 
 function renderHero(data) {
+  const ifipBadge = data.ifip_event_id ? `
+    <a href="https://ifip.org/" target="_blank" class="hero-flank hero-flank-left">
+      <img src="/images/finalifp.png" alt="IFIP Logo" class="hero-flank-logo">
+      <span class="hero-flank-subtext">Event #${allowSafeHtml(data.ifip_event_id)}</span>
+    </a>` : '';
+
+  // const rightBadge = `
+  //   <div class="hero-flank hero-flank-right">
+  //     <img src="/images/aegislogo.png" alt="AegisAI Logo" class="hero-flank-logo">
+  //   </div>`;
+
   return `
   <section class="hero">
     <img class="hero-video-bg" src="/images/Gemini_Generated_Image_3oej803oej803oej.png" alt="University Gate">
     
+    ${ifipBadge}
+
     <div class="hero-content-wrapper">
       <div class="hero-center-content">
         <h1>${allowSafeHtml(data.conference_name)}</h1>
@@ -137,7 +150,7 @@ function renderSubmitButton(data) {
 
 function renderSpeakerGrid(data) {
   const cards = (data.speakers || []).map(s => {
-    const initials = s.name === 'To Be Announced' ? '?' : s.name.split(' ').map(w=>w[0]).join('').slice(0,2);
+    const initials = s.name === 'To Be Announced' ? '?' : s.name.split(' ').map(w => w[0]).join('').slice(0, 2);
     const avatar = s.photo_url
       ? `<img src="${esc(s.photo_url)}" alt="${esc(s.name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
          <div class="speaker-avatar-initials" style="display:none;">${esc(initials)}</div>`
@@ -167,7 +180,7 @@ function renderCommitteeGroup(data) {
     const noAvatarGridClass = g.hide_avatar ? ' committee-members-no-avatar' : '';
     const singleMemberClass = membersArr.length === 1 ? ' committee-members-single' : '';
     const members = membersArr.map(m => {
-      const initials = m.name === 'To Be Announced' ? '?' : m.name.split(' ').map(w=>w[0]).join('').slice(0,2);
+      const initials = m.name === 'To Be Announced' ? '?' : m.name.split(' ').map(w => w[0]).join('').slice(0, 2);
       const avatar = m.photo_url
         ? `<img src="${esc(m.photo_url)}" alt="${esc(m.name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
            <div class="committee-avatar-initials" style="display:none;">${esc(initials)}</div>`
@@ -257,19 +270,19 @@ function renderContactInfo(data) {
 function renderSection(section) {
   const d = section.data;
   switch (section.type) {
-    case 'hero':            return renderHero(d);
-    case 'key_dates':       return renderKeyDates(d);
-    case 'text_block':      return renderTextBlock(d);
-    case 'logo_bar':        return renderLogoBar(d);
+    case 'hero': return renderHero(d);
+    case 'key_dates': return renderKeyDates(d);
+    case 'text_block': return renderTextBlock(d);
+    case 'logo_bar': return renderLogoBar(d);
     case 'university_info': return renderUniversityInfo(d);
-    case 'topics_list':     return renderTopicsList(d);
-    case 'dates_table':     return renderDatesTable(d);
-    case 'submit_button':   return renderSubmitButton(d);
-    case 'speaker_grid':    return renderSpeakerGrid(d);
+    case 'topics_list': return renderTopicsList(d);
+    case 'dates_table': return renderDatesTable(d);
+    case 'submit_button': return renderSubmitButton(d);
+    case 'speaker_grid': return renderSpeakerGrid(d);
     case 'committee_group': return renderCommitteeGroup(d);
-    case 'map_embed':       return renderMapEmbed(d);
-    case 'contact_info':    return renderContactInfo(d);
-    default:                return '';
+    case 'map_embed': return renderMapEmbed(d);
+    case 'contact_info': return renderContactInfo(d);
+    default: return '';
   }
 }
 
@@ -277,8 +290,8 @@ function renderSection(section) {
 function esc(str) {
   if (!str) return '';
   return String(str)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 function allowSafeHtml(str) {

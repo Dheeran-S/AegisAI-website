@@ -86,6 +86,13 @@ router.get('/:slug', async (req, res) => {
       'SELECT * FROM sections WHERE page_id = ? ORDER BY section_order',
       [page.id]
     );
+
+    sections.forEach(s => {
+      if (typeof s.data === 'string') {
+        try { s.data = JSON.parse(s.data); } catch(e) {}
+      }
+    });
+
     res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
     res.json({ ...page, sections });
   } catch (err) {
