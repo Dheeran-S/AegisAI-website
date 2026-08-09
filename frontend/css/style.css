@@ -189,11 +189,11 @@ body {
 }
 
 .is-home .navbar:not(.scrolled) .nav-links {
-  gap: 1.5rem;
+  gap: 0.8rem;
 }
 
 .is-home .navbar:not(.scrolled) .nav-links a {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.6rem;
   font-weight: 500;
 }
 
