@@ -222,6 +222,7 @@ function renderSectionList(sections) {
       <option value="committee_group">Committee Group</option>
       <option value="map_embed">Map Embed</option>
       <option value="contact_info">Contact Info</option>
+      <option value="program_schedule">Program Schedule</option>
     </select>
     <button class="btn-a btn-primary-a" onclick="addSection()">+ Add Section</button>
     <span class="alert" id="add-section-msg" style="display:none;margin:0"></span>`;
@@ -307,6 +308,7 @@ function buildForm(s) {
     case 'committee_group': return committeeForm(d, id);
     case 'map_embed':       return mapForm(d, id);
     case 'contact_info':    return contactInfoForm(d, id);
+    case 'program_schedule': return programScheduleForm(d, id);
     default:                return `<textarea class="form-textarea-a" style="height:200px;font-family:monospace;font-size:.8rem" data-field="__raw">${JSON.stringify(d,null,2)}</textarea>`;
   }
 }
@@ -523,6 +525,70 @@ function contactInfoForm(d, id) {
        <button class="array-add-btn" onclick="addSocial(${id})">+ Add Link</button></div>`;
 }
 
+function programScheduleForm(d, id) {
+  const rooms = (d.rooms || []).map((r, i) => `
+    <div class="array-item">
+      <div class="array-item-fields">
+        <input class="form-input-a" placeholder="Room name" data-arr="rooms" data-idx="${i}" data-key="__str" value="${escAttr(r)}">
+      </div>
+      <button class="btn-a btn-danger-a btn-sm" onclick="removeArrItem(this)">✕</button>
+    </div>`).join('');
+
+  const days = (d.days || []).map((day, di) => {
+    const slots = (day.slots || []).map((slot, si) => {
+      const sessions = (slot.sessions || []).map((sess, sei) => `
+        <div style="display:flex;gap:.4rem;margin-bottom:.35rem;flex-wrap:wrap;align-items:center">
+          <input class="form-input-a" style="width:100px" placeholder="Room" data-arr="days" data-idx="${di}" data-sub="slots" data-sidx="${si}" data-sub2="sessions" data-sidx2="${sei}" data-key="room" value="${escAttr(sess.room || '')}">
+          <input class="form-input-a" style="flex:1;min-width:140px" placeholder="Title" data-arr="days" data-idx="${di}" data-sub="slots" data-sidx="${si}" data-sub2="sessions" data-sidx2="${sei}" data-key="title" value="${escAttr(sess.title || '')}">
+          <input class="form-input-a" style="flex:1;min-width:120px" placeholder="Speaker" data-arr="days" data-idx="${di}" data-sub="slots" data-sidx="${si}" data-sub2="sessions" data-sidx2="${sei}" data-key="speaker" value="${escAttr(sess.speaker || '')}">
+          <input class="form-input-a" style="flex:1;min-width:120px" placeholder="Affiliation" data-arr="days" data-idx="${di}" data-sub="slots" data-sidx="${si}" data-sub2="sessions" data-sidx2="${sei}" data-key="affiliation" value="${escAttr(sess.affiliation || '')}">
+          <button class="btn-a btn-danger-a btn-sm" onclick="this.closest('div[style]').remove()">✕</button>
+        </div>`).join('');
+
+      return `
+      <div class="array-item" style="flex-direction:column;gap:.5rem;background:${slot.is_break ? 'rgba(232,184,75,.06)' : 'transparent'}">
+        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+          <input class="form-input-a" style="width:70px" placeholder="Start" data-arr="days" data-idx="${di}" data-sub="slots" data-sidx="${si}" data-key="start" value="${escAttr(slot.start || '')}">
+          <input class="form-input-a" style="width:70px" placeholder="End" data-arr="days" data-idx="${di}" data-sub="slots" data-sidx="${si}" data-key="end" value="${escAttr(slot.end || '')}">
+          <input class="form-input-a" style="width:60px" placeholder="Dur." data-arr="days" data-idx="${di}" data-sub="slots" data-sidx="${si}" data-key="duration" value="${escAttr(slot.duration || '')}">
+          <label style="font-size:0.8rem;display:flex;align-items:center;gap:.25rem">
+            <input type="checkbox" data-arr="days" data-idx="${di}" data-sub="slots" data-sidx="${si}" data-key="is_break" ${slot.is_break ? 'checked' : ''}> Break?
+          </label>
+          <input class="form-input-a" style="flex:1;min-width:120px" placeholder="Break label (if break)" data-arr="days" data-idx="${di}" data-sub="slots" data-sidx="${si}" data-key="break_label" value="${escAttr(slot.break_label || '')}">
+          <button class="btn-a btn-danger-a btn-sm" onclick="removeArrItem(this)">✕ Slot</button>
+        </div>
+        <div style="padding-left:1.5rem" class="schedule-sessions-wrap" data-day="${di}" data-slot="${si}">
+          <div style="font-size:.75rem;font-weight:600;color:var(--muted);margin-bottom:.25rem">Sessions (one per room):</div>
+          ${sessions}
+          <button class="array-add-btn" onclick="addScheduleSession(this, ${di}, ${si}, ${id})">+ Add Session</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    return `
+    <div class="array-item" style="flex-direction:column;gap:.75rem;border-left:3px solid var(--primary)">
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <input class="form-input-a" style="flex:1" placeholder="Tab label (e.g. 7 July (Tue))" data-arr="days" data-idx="${di}" data-key="label" value="${escAttr(day.label || '')}">
+        <input class="form-input-a" style="flex:1" placeholder="Full label" data-arr="days" data-idx="${di}" data-key="full_label" value="${escAttr(day.full_label || '')}">
+        <button class="btn-a btn-danger-a btn-sm" onclick="removeArrItem(this)">✕ Day</button>
+      </div>
+      <div style="padding-left:1rem" class="schedule-slots-wrap" data-day="${di}">
+        <div style="font-size:.78rem;font-weight:600;color:var(--primary);margin-bottom:.4rem">Time Slots:</div>
+        ${slots}
+        <button class="array-add-btn" onclick="addScheduleSlot(this, ${di}, ${id})">+ Add Time Slot</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  return fi('Section Heading', 'heading', d.heading)
+    + `<div class="form-group-a"><label class="form-label-a">Rooms</label>
+       <div class="array-editor" id="arr-rooms-${id}">${rooms}</div>
+       <button class="array-add-btn" onclick="addScheduleRoom(${id})">+ Add Room</button></div>`
+    + `<div class="form-group-a"><label class="form-label-a">Days</label>
+       <div class="array-editor" id="arr-days-${id}">${days}</div>
+       <button class="array-add-btn" onclick="addScheduleDay(${id})">+ Add Day</button></div>`;
+}
+
 // ── Array item add/remove ─────────────────────────────────────────────
 function removeArrItem(btn) { btn.closest('.array-item').remove(); }
 function removeMember(btn)  { btn.closest('div[style*="margin-bottom"]').remove(); }
@@ -559,6 +625,78 @@ function addSpeaker(id) {
   container.appendChild(div);
 }
 function addSocial(id)    { addStrItem(`arr-socials-${id}`, 'socials', {platform:'Twitter/X', handle:'@handle', url:'#'}); }
+
+function addScheduleRoom(id) { addStrItem(`arr-rooms-${id}`, 'rooms', {__str: 'New Room'}); }
+
+function addScheduleDay(id) {
+  const container = document.getElementById(`arr-days-${id}`);
+  let maxIdx = -1;
+  container.querySelectorAll('[data-arr="days"]').forEach(el => {
+    const idx = parseInt(el.dataset.idx, 10);
+    if (!isNaN(idx) && idx > maxIdx) maxIdx = idx;
+  });
+  const di = maxIdx + 1;
+  const div = document.createElement('div');
+  div.className = 'array-item'; div.style.flexDirection = 'column'; div.style.gap = '.75rem'; div.style.borderLeft = '3px solid var(--primary)';
+  div.innerHTML = `
+    <div style="display:flex;gap:.5rem;align-items:center">
+      <input class="form-input-a" style="flex:1" placeholder="Tab label" data-arr="days" data-idx="${di}" data-key="label" value="Day ${di + 1}">
+      <input class="form-input-a" style="flex:1" placeholder="Full label" data-arr="days" data-idx="${di}" data-key="full_label" value="Day ${di + 1} — Conference Program">
+      <button class="btn-a btn-danger-a btn-sm" onclick="removeArrItem(this)">✕ Day</button>
+    </div>
+    <div style="padding-left:1rem" class="schedule-slots-wrap" data-day="${di}">
+      <div style="font-size:.78rem;font-weight:600;color:var(--primary);margin-bottom:.4rem">Time Slots:</div>
+      <button class="array-add-btn" onclick="addScheduleSlot(this, ${di}, ${id})">+ Add Time Slot</button>
+    </div>`;
+  container.appendChild(div);
+}
+
+function addScheduleSlot(btn, di, id) {
+  const wrap = btn.parentElement;
+  let maxSidx = -1;
+  wrap.querySelectorAll('[data-sub="slots"]').forEach(el => {
+    const sidx = parseInt(el.dataset.sidx, 10);
+    if (!isNaN(sidx) && sidx > maxSidx) maxSidx = sidx;
+  });
+  const si = maxSidx + 1;
+  const div = document.createElement('div');
+  div.className = 'array-item'; div.style.flexDirection = 'column'; div.style.gap = '.5rem';
+  div.innerHTML = `
+    <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+      <input class="form-input-a" style="width:70px" placeholder="Start" data-arr="days" data-idx="${di}" data-sub="slots" data-sidx="${si}" data-key="start" value="09:00">
+      <input class="form-input-a" style="width:70px" placeholder="End" data-arr="days" data-idx="${di}" data-sub="slots" data-sidx="${si}" data-key="end" value="10:00">
+      <input class="form-input-a" style="width:60px" placeholder="Dur." data-arr="days" data-idx="${di}" data-sub="slots" data-sidx="${si}" data-key="duration" value="1:00">
+      <label style="font-size:0.8rem;display:flex;align-items:center;gap:.25rem">
+        <input type="checkbox" data-arr="days" data-idx="${di}" data-sub="slots" data-sidx="${si}" data-key="is_break"> Break?
+      </label>
+      <input class="form-input-a" style="flex:1;min-width:120px" placeholder="Break label (if break)" data-arr="days" data-idx="${di}" data-sub="slots" data-sidx="${si}" data-key="break_label" value="">
+      <button class="btn-a btn-danger-a btn-sm" onclick="removeArrItem(this)">✕ Slot</button>
+    </div>
+    <div style="padding-left:1.5rem" class="schedule-sessions-wrap" data-day="${di}" data-slot="${si}">
+      <div style="font-size:.75rem;font-weight:600;color:var(--muted);margin-bottom:.25rem">Sessions (one per room):</div>
+      <button class="array-add-btn" onclick="addScheduleSession(this, ${di}, ${si}, ${id})">+ Add Session</button>
+    </div>`;
+  wrap.insertBefore(div, btn);
+}
+
+function addScheduleSession(btn, di, si, id) {
+  const wrap = btn.parentElement;
+  let maxSei = -1;
+  wrap.querySelectorAll('[data-sub2="sessions"]').forEach(el => {
+    const sei = parseInt(el.dataset.sidx2, 10);
+    if (!isNaN(sei) && sei > maxSei) maxSei = sei;
+  });
+  const sei = maxSei + 1;
+  const div = document.createElement('div');
+  div.style.cssText = 'display:flex;gap:.4rem;margin-bottom:.35rem;flex-wrap:wrap;align-items:center';
+  div.innerHTML = `
+    <input class="form-input-a" style="width:100px" placeholder="Room" data-arr="days" data-idx="${di}" data-sub="slots" data-sidx="${si}" data-sub2="sessions" data-sidx2="${sei}" data-key="room" value="">
+    <input class="form-input-a" style="flex:1;min-width:140px" placeholder="Title" data-arr="days" data-idx="${di}" data-sub="slots" data-sidx="${si}" data-sub2="sessions" data-sidx2="${sei}" data-key="title" value="">
+    <input class="form-input-a" style="flex:1;min-width:120px" placeholder="Speaker" data-arr="days" data-idx="${di}" data-sub="slots" data-sidx="${si}" data-sub2="sessions" data-sidx2="${sei}" data-key="speaker" value="">
+    <input class="form-input-a" style="flex:1;min-width:120px" placeholder="Affiliation" data-arr="days" data-idx="${di}" data-sub="slots" data-sidx="${si}" data-sub2="sessions" data-sidx2="${sei}" data-key="affiliation" value="">
+    <button class="btn-a btn-danger-a btn-sm" onclick="this.closest('div[style]').remove()">✕</button>`;
+  wrap.insertBefore(div, btn);
+}
 
 function addStrItem(containerId, arrKey, defaults) {
   const container = document.getElementById(containerId);
@@ -645,12 +783,21 @@ function collectFormData(sectionId) {
     const key  = el.dataset.key;
     const sub  = el.dataset.sub;
     const sidx = el.dataset.sidx !== undefined ? parseInt(el.dataset.sidx) : null;
+    const sub2 = el.dataset.sub2;
+    const sidx2 = el.dataset.sidx2 !== undefined ? parseInt(el.dataset.sidx2) : null;
     let val = el.type === 'checkbox' ? el.checked : el.value;
 
     if (!arrays[arr]) arrays[arr] = [];
     if (!arrays[arr][idx]) arrays[arr][idx] = {};
 
-    if (sub && sidx !== null) {
+    if (sub && sidx !== null && sub2 && sidx2 !== null) {
+      // Triple-nested: arr[idx].sub[sidx].sub2[sidx2].key = val
+      if (!arrays[arr][idx][sub]) arrays[arr][idx][sub] = [];
+      if (!arrays[arr][idx][sub][sidx]) arrays[arr][idx][sub][sidx] = {};
+      if (!arrays[arr][idx][sub][sidx][sub2]) arrays[arr][idx][sub][sidx][sub2] = [];
+      if (!arrays[arr][idx][sub][sidx][sub2][sidx2]) arrays[arr][idx][sub][sidx][sub2][sidx2] = {};
+      arrays[arr][idx][sub][sidx][sub2][sidx2][key] = val;
+    } else if (sub && sidx !== null) {
       if (!arrays[arr][idx][sub]) arrays[arr][idx][sub] = [];
       if (!arrays[arr][idx][sub][sidx]) arrays[arr][idx][sub][sidx] = {};
       arrays[arr][idx][sub][sidx][key] = val;
@@ -661,18 +808,23 @@ function collectFormData(sectionId) {
     }
   });
 
-  // Filter nulls from arrays
-  Object.entries(arrays).forEach(([k,v]) => { 
-    data[k] = v.filter(Boolean); 
-    data[k].forEach(item => {
+  // Filter nulls from arrays (recursive for nested arrays)
+  function filterNulls(arr) {
+    const filtered = arr.filter(Boolean);
+    filtered.forEach(item => {
       if (item && typeof item === 'object') {
         Object.keys(item).forEach(subK => {
           if (Array.isArray(item[subK])) {
-            item[subK] = item[subK].filter(Boolean);
+            item[subK] = filterNulls(item[subK]);
           }
         });
       }
     });
+    return filtered;
+  }
+
+  Object.entries(arrays).forEach(([k,v]) => { 
+    data[k] = filterNulls(v);
   });
   return data;
 }

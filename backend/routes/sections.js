@@ -17,6 +17,23 @@ const DEFAULTS = {
   committee_group: { groups: [{ role: 'New Role', members: [{ name: 'To Be Announced', affiliation: 'TBA' }] }] },
   map_embed:       { address: 'Enter address here', map_url: '', travel_info: 'Travel information here.' },
   contact_info:    { email: 'contact@example.com', phone: '', address: '', socials: [] },
+  program_schedule: {
+    heading: 'Conference Program',
+    rooms: ['Room 1', 'Room 2', 'Room 3', 'Room 4', 'Room 5'],
+    days: [
+      {
+        label: 'Day 1',
+        full_label: 'Day 1 — Conference Program',
+        slots: [
+          { start: '08:00', end: '09:00', duration: '1:00', is_break: true, break_label: 'Registration', sessions: [] },
+          { start: '09:00', end: '10:30', duration: '1:30', is_break: false, sessions: [
+            { room: 'Room 1', title: 'Tutorial Title', speaker: 'Speaker Name', affiliation: 'University' }
+          ]},
+          { start: '10:30', end: '11:00', duration: '0:30', is_break: true, break_label: 'Tea Break', sessions: [] }
+        ]
+      }
+    ]
+  },
 };
 
 // POST /api/sections — create a new section (admin)

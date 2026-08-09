@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Home Page -->
+  <url>
+    <loc>https://aegisai.snuchennai.edu.in/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Call for Papers -->
+  <url>
+    <loc>https://aegisai.snuchennai.edu.in/cfp.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Submission Guidelines -->
+  <url>
+    <loc>https://aegisai.snuchennai.edu.in/submission-guidelines.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Speakers -->
+  <url>
+    <loc>https://aegisai.snuchennai.edu.in/speakers.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Committee -->
+  <url>
+    <loc>https://aegisai.snuchennai.edu.in/committee.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Registration -->
+  <url>
+    <loc>https://aegisai.snuchennai.edu.in/registration.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Venue -->
+  <url>
+    <loc>https://aegisai.snuchennai.edu.in/venue.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Contact -->
+  <url>
+    <loc>https://aegisai.snuchennai.edu.in/contact.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+</urlset>

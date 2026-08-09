@@ -7,16 +7,17 @@ function renderHero(data) {
       ${data.ifip_event_id ? `<span class="hero-flank-subtext">Event #${allowSafeHtml(data.ifip_event_id)}</span>` : ''}
     </a>`;
 
-  // const rightBadge = `
-  //   <div class="hero-flank hero-flank-right">
-  //     <img src="/images/aegislogo.png" alt="AegisAI Logo" class="hero-flank-logo">
-  //   </div>`;
+  const rightBadge = `
+    <div class="hero-flank hero-flank-right">
+      <img src="/images/springer%20logo%20tranaparant.png" alt="Springer Logo" class="hero-flank-logo">
+    </div>`;
 
   return `
   <section class="hero">
     <img class="hero-video-bg" src="/images/Gemini_Generated_Image_3oej803oej803oej.png" alt="University Gate">
     
     ${ifipBadge}
+    ${rightBadge}
 
     <div class="hero-content-wrapper">
       <div class="hero-center-content">
@@ -266,6 +267,101 @@ function renderContactInfo(data) {
     </div>`;
 }
 
+function renderProgramSchedule(data) {
+  const rooms = data.rooms || ['Room 1', 'Room 2', 'Room 3', 'Room 4', 'Room 5'];
+  const days = data.days || [];
+  const scheduleId = 'sched-' + Math.random().toString(36).slice(2, 8);
+
+  // Build day tabs
+  const tabs = days.map((day, i) => `
+    <button class="schedule-tab${i === 0 ? ' active' : ''}"
+            data-schedule="${scheduleId}" data-day="${i}"
+            onclick="switchScheduleDay('${scheduleId}', ${i})">${allowSafeHtml(day.label)}</button>`).join('');
+
+  // Build day panels
+  const panels = days.map((day, di) => {
+    // Build rows for this day
+    const slotRows = (day.slots || []).map(slot => {
+      if (slot.is_break) {
+        return `
+          <tr class="schedule-break-row">
+            <td class="schedule-time-cell" data-label="Start">${esc(slot.start)}</td>
+            <td class="schedule-time-cell" data-label="End">${esc(slot.end)}</td>
+            <td class="schedule-time-cell" data-label="Duration">${esc(slot.duration)}</td>
+            <td colspan="${rooms.length}" class="schedule-break-cell">${allowSafeHtml(slot.break_label || 'Break')}</td>
+          </tr>`;
+      }
+
+      // Non-break: build session cells per room (by index, not name match)
+      const sessions = slot.sessions || [];
+
+      const roomCells = rooms.map((room, ri) => {
+        const s = sessions[ri];
+        if (!s || (!s.title && !s.speaker)) return `<td class="schedule-session-cell schedule-empty-cell" data-room="${esc(room)}"></td>`;
+        return `
+          <td class="schedule-session-cell" data-room="${esc(room)}">
+            <div class="schedule-session">
+              <div class="schedule-session-title">${allowSafeHtml(s.title)}</div>
+              ${s.speaker ? `<div class="schedule-session-speaker">Speaker: ${allowSafeHtml(s.speaker)}</div>` : ''}
+              ${s.affiliation ? `<div class="schedule-session-affil">${allowSafeHtml(s.affiliation)}</div>` : ''}
+            </div>
+          </td>`;
+      }).join('');
+
+      return `
+        <tr>
+          <td class="schedule-time-cell" data-label="Start">${esc(slot.start)}</td>
+          <td class="schedule-time-cell" data-label="End">${esc(slot.end)}</td>
+          <td class="schedule-time-cell" data-label="Duration">${esc(slot.duration)}</td>
+          ${roomCells}
+        </tr>`;
+    }).join('');
+
+    // Room headers
+    const roomHeaders = rooms.map(r => `<th class="schedule-th-room">${allowSafeHtml(r)}</th>`).join('');
+
+    return `
+      <div class="schedule-day-panel${di === 0 ? ' active' : ''}" data-schedule="${scheduleId}" data-day-panel="${di}">
+        <div class="schedule-day-label">${allowSafeHtml(day.full_label || day.label)}</div>
+        <div class="schedule-table-wrap">
+          <table class="schedule-table">
+            <thead>
+              <tr>
+                <th class="schedule-th-time">Start</th>
+                <th class="schedule-th-time">End</th>
+                <th class="schedule-th-time">Duration</th>
+                ${roomHeaders}
+              </tr>
+            </thead>
+            <tbody>${slotRows}</tbody>
+          </table>
+        </div>
+      </div>`;
+  }).join('');
+
+  return `
+  <section class="section fade-in">
+    <div class="container">
+      <h2 class="section-title">${allowSafeHtml(data.heading || 'Conference Program')}</h2>
+      <div class="section-line"></div>
+      <div class="schedule-component" id="${scheduleId}">
+        <div class="schedule-tabs">${tabs}</div>
+        ${panels}
+      </div>
+    </div>
+  </section>`;
+}
+
+// Tab-switching for schedule component (must be global, not in innerHTML <script>)
+function switchScheduleDay(id, dayIdx) {
+  document.querySelectorAll('[data-schedule="' + id + '"].schedule-tab').forEach(function(t) {
+    t.classList.toggle('active', parseInt(t.dataset.day) === dayIdx);
+  });
+  document.querySelectorAll('[data-schedule="' + id + '"][data-day-panel]').forEach(function(p) {
+    p.classList.toggle('active', parseInt(p.dataset.dayPanel) === dayIdx);
+  });
+}
+
 // ── Dispatcher ────────────────────────────────────────────────────────
 function renderSection(section) {
   const d = section.data;
@@ -282,6 +378,7 @@ function renderSection(section) {
     case 'committee_group': return renderCommitteeGroup(d);
     case 'map_embed': return renderMapEmbed(d);
     case 'contact_info': return renderContactInfo(d);
+    case 'program_schedule': return renderProgramSchedule(d);
     default: return '';
   }
 }
