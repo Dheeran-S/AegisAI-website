@@ -195,6 +195,9 @@ body {
 .is-home .navbar:not(.scrolled) .nav-links a {
   padding: 0.5rem 0.6rem;
   font-weight: 500;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.2;
 }
 
 .nav-links a:hover,
@@ -432,7 +435,7 @@ body {
 
 /* ── SECTION LAYOUT ── */
 .section {
-  padding: 5rem 2rem;
+  padding: 2.5rem 2rem;
 }
 
 .section-alt {
@@ -468,7 +471,7 @@ body {
 /* ── KEY DATES STRIP ── */
 .key-dates-strip {
   background: var(--primary);
-  padding: 3rem 2rem;
+  padding: 2.5rem 2rem;
 }
 
 .key-dates-grid {
