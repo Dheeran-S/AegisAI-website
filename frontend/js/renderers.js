@@ -9,7 +9,7 @@ function renderHero(data) {
 
   const rightBadge = `
     <div class="hero-flank hero-flank-right">
-      <img src="/images/springer%20logo%20tranaparant.png" alt="Springer Logo" class="hero-flank-logo">
+      <img src="images/springer_logo.png" alt="Springer Logo" class="hero-flank-logo">
     </div>`;
 
   return `
@@ -124,7 +124,7 @@ function renderDatesTable(data) {
       <td class="td-note">${allowSafeHtml(r.note || '')}</td>
     </tr>`).join('');
   return `
-  <section class="section section-alt fade-in">
+  <section class="section fade-in">
     <div class="container">
       <h2 class="section-title">${allowSafeHtml(data.heading || 'Important Dates')}</h2>
       <div class="section-line"></div>
@@ -354,10 +354,10 @@ function renderProgramSchedule(data) {
 
 // Tab-switching for schedule component (must be global, not in innerHTML <script>)
 function switchScheduleDay(id, dayIdx) {
-  document.querySelectorAll('[data-schedule="' + id + '"].schedule-tab').forEach(function(t) {
+  document.querySelectorAll('[data-schedule="' + id + '"].schedule-tab').forEach(function (t) {
     t.classList.toggle('active', parseInt(t.dataset.day) === dayIdx);
   });
-  document.querySelectorAll('[data-schedule="' + id + '"][data-day-panel]').forEach(function(p) {
+  document.querySelectorAll('[data-schedule="' + id + '"][data-day-panel]').forEach(function (p) {
     p.classList.toggle('active', parseInt(p.dataset.dayPanel) === dayIdx);
   });
 }

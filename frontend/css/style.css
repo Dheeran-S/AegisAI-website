@@ -42,6 +42,22 @@ body {
   min-height: 100vh;
 }
 
+/* ── Particle Network Canvas ── */
+#particle-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  #particle-canvas {
+    display: none;
+  }
+}
+
 /* ── NAVBAR ── */
 .navbar {
   position: sticky;
@@ -1371,18 +1387,29 @@ footer strong {
 
 @media (max-width: 600px) {
   .hero-flank {
-    position: absolute;
-    top: 15%;
-    bottom: auto;
-    left: 50%;
     transform: translateX(-50%);
     flex-direction: row;
     gap: 10px;
     align-items: center;
   }
 
+  .hero-flank-left {
+    left: 50%;
+    top: 90px;
+  }
+
+  .hero-flank-right {
+    right: auto;
+    left: 50%;
+    top: 170px;
+  }
+
   .hero-flank:hover {
     transform: translateX(-50%) scale(1.05);
+  }
+
+  .hero-center-content {
+    padding-top: 120px;
   }
 
   .hero-flank-logo {
