@@ -774,6 +774,23 @@ body {
   color: var(--muted);
 }
 
+.dates-table-footnote {
+  margin-top: .75rem;
+  padding: .85rem 1.25rem;
+  background: #f0f4f9;
+  border-left: 3px solid var(--primary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: .85rem;
+  color: var(--text);
+  line-height: 1.55;
+}
+
+.dates-table-footnote-label {
+  font-weight: 700;
+  color: var(--primary);
+  margin-right: .25rem;
+}
+
 /* ── SUBMIT BUTTON SECTION ── */
 .submit-section {
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);

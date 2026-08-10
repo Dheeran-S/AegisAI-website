@@ -6,7 +6,7 @@ const router  = express.Router();
 // GET /api/pages — list all pages (public)
 router.get('/', async (req, res) => {
   try {
-    const [pages] = await db.query('SELECT id, slug, title, meta_description, nav_order FROM pages ORDER BY nav_order');
+    const [pages] = await db.query('SELECT id, slug, title, meta_description, nav_order, is_private FROM pages ORDER BY nav_order');
     res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
     res.json(pages);
   } catch (err) {
@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 
 // POST /api/pages — create a new page (admin)
 router.post('/', auth, async (req, res) => {
-  const { slug, title, meta_description } = req.body;
+  const { slug, title, meta_description, is_private } = req.body;
   if (!slug || !title) return res.status(400).json({ error: 'slug and title are required' });
   if (!/^[a-z0-9-]+$/.test(slug)) return res.status(400).json({ error: 'slug must be lowercase letters, numbers, hyphens only' });
   try {
@@ -27,8 +27,8 @@ router.post('/', auth, async (req, res) => {
     const nav_order = (maxOrder[0].m || 0) + 1;
 
     const [result] = await db.query(
-      'INSERT INTO pages (slug, title, meta_description, nav_order) VALUES (?, ?, ?, ?)',
-      [slug, title, meta_description || '', nav_order]
+      'INSERT INTO pages (slug, title, meta_description, nav_order, is_private) VALUES (?, ?, ?, ?, ?)',
+      [slug, title, meta_description || '', nav_order, is_private ? 1 : 0]
     );
     const [rows] = await db.query('SELECT * FROM pages WHERE id = ?', [result.insertId]);
     res.status(201).json(rows[0]);
@@ -39,10 +39,10 @@ router.post('/', auth, async (req, res) => {
 
 // PATCH /api/pages/:id — update page metadata (admin)
 router.patch('/:id', auth, async (req, res) => {
-  const { title, meta_description } = req.body;
+  const { title, meta_description, is_private } = req.body;
   try {
-    await db.query('UPDATE pages SET title = ?, meta_description = ? WHERE id = ?',
-      [title, meta_description, req.params.id]);
+    await db.query('UPDATE pages SET title = ?, meta_description = ?, is_private = ? WHERE id = ?',
+      [title, meta_description, is_private ? 1 : 0, req.params.id]);
     const [rows] = await db.query('SELECT * FROM pages WHERE id = ?', [req.params.id]);
     res.json(rows[0]);
   } catch (err) {

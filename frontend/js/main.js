@@ -10,7 +10,7 @@ async function loadNav(activeSlug) {
   try {
     const res   = await fetch('/api/pages');
     const pages = await res.json();
-    ul.innerHTML = pages.map(p => {
+    ul.innerHTML = pages.filter(p => !p.is_private).map(p => {
       const href   = p.slug === 'home' ? '/' : `/${p.slug}.html`;
       const active = p.slug === activeSlug ? ' class="active"' : '';
       return `<li><a href="${href}" data-page="${p.slug}"${active}>${p.title}</a></li>`;

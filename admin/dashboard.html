@@ -98,6 +98,10 @@
       <label class="form-label-a" for="np-meta">Meta Description (optional)</label>
       <input class="form-input-a" id="np-meta" placeholder="Short description for search engines">
     </div>
+    <div class="form-group-a" style="display:flex;align-items:center;gap:0.5rem">
+      <input type="checkbox" id="np-private">
+      <label for="np-private" style="margin:0;font-size:0.9rem">Private Page (Hide from Nav)</label>
+    </div>
     <div class="modal-footer">
       <button class="btn-a btn-ghost-a" onclick="closeNewPageModal()">Cancel</button>
       <button class="btn-a btn-primary-a" id="np-submit" onclick="createPage()">Create Page</button>
@@ -118,6 +122,10 @@
     <div class="form-group-a">
       <label class="form-label-a" for="ep-meta">Meta Description</label>
       <input class="form-input-a" id="ep-meta">
+    </div>
+    <div class="form-group-a" style="display:flex;align-items:center;gap:0.5rem">
+      <input type="checkbox" id="ep-private">
+      <label for="ep-private" style="margin:0;font-size:0.9rem">Private Page (Hide from Nav)</label>
     </div>
     <div class="modal-footer">
       <button class="btn-a btn-ghost-a" onclick="closeEditPageModal()">Cancel</button>
@@ -160,7 +168,7 @@ function renderPages() {
         <button class="btn-a btn-ghost-a btn-sm" onclick="movePage(${index}, -1)" ${index === 0 ? 'disabled style="opacity:0.3"' : ''} title="Move Up">↑</button>
         <button class="btn-a btn-ghost-a btn-sm" onclick="movePage(${index}, 1)" ${index === pagesData.length - 1 ? 'disabled style="opacity:0.3"' : ''} title="Move Down">↓</button>
         <a href="${p.slug === 'home' ? '/' : '/' + p.slug + '.html'}" target="_blank" class="btn-a btn-ghost-a btn-sm">Preview</a>
-        <button class="btn-a btn-ghost-a btn-sm" onclick="openEditPageModal(${p.id})">Rename</button>
+        <button class="btn-a btn-ghost-a btn-sm" onclick="openEditPageModal(${p.id})">Rename/Settings</button>
         <a href="editor.html?page=${p.slug}&id=${p.id}" class="btn-a btn-primary-a btn-sm">Edit Content</a>
         <button class="btn-a btn-danger-a btn-sm" onclick="deletePage(${p.id},'${p.slug}','${p.title}')">Delete</button>
       </div>
@@ -191,6 +199,7 @@ function openNewPageModal() {
   document.getElementById('np-title').value = '';
   document.getElementById('np-slug').value = '';
   document.getElementById('np-meta').value = '';
+  document.getElementById('np-private').checked = false;
   document.getElementById('modal-alert').innerHTML = '';
   document.getElementById('new-page-modal').classList.add('open');
 }
@@ -206,6 +215,7 @@ async function createPage() {
   const title = document.getElementById('np-title').value.trim();
   const slug  = document.getElementById('np-slug').value.trim();
   const meta  = document.getElementById('np-meta').value.trim();
+  const is_private = document.getElementById('np-private').checked;
   const btn   = document.getElementById('np-submit');
   const alert = document.getElementById('modal-alert');
 
@@ -218,7 +228,7 @@ async function createPage() {
     const r = await fetch(API + '/pages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-      body: JSON.stringify({ slug, title, meta_description: meta })
+      body: JSON.stringify({ slug, title, meta_description: meta, is_private })
     });
     const d = await r.json();
     if (r.ok) {
@@ -253,6 +263,7 @@ function openEditPageModal(id) {
   document.getElementById('ep-id').value = id;
   document.getElementById('ep-title').value = page.title;
   document.getElementById('ep-meta').value = page.meta_description || '';
+  document.getElementById('ep-private').checked = !!page.is_private;
   document.getElementById('ep-alert').innerHTML = '';
   document.getElementById('edit-page-modal').classList.add('open');
 }
@@ -267,6 +278,7 @@ async function updatePage() {
   const id = document.getElementById('ep-id').value;
   const title = document.getElementById('ep-title').value.trim();
   const meta = document.getElementById('ep-meta').value.trim();
+  const is_private = document.getElementById('ep-private').checked;
   const btn = document.getElementById('ep-submit');
   const alert = document.getElementById('ep-alert');
   
@@ -277,7 +289,7 @@ async function updatePage() {
     const r = await fetch(API + '/pages/' + id, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-      body: JSON.stringify({ title, meta_description: meta })
+      body: JSON.stringify({ title, meta_description: meta, is_private })
     });
     if (r.ok) {
       closeEditPageModal();

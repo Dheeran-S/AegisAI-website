@@ -430,7 +430,8 @@ function datesTableForm(d, id) {
        </div>`
     + `<div class="form-group-a"><label class="form-label-a">Date Rows</label>
        <div class="array-editor" id="arr-rows-${id}">${items}</div>
-       <button class="array-add-btn" onclick="addDateRow(${id})">+ Add Row</button></div>`;
+       <button class="array-add-btn" onclick="addDateRow(${id})">+ Add Row</button></div>`
+    + ta('Footnote / Late Fee Note', 'footnote', d.footnote || '', 'Displayed below the table. E.g. A late fee of ₹500 for students after 10th August, 2026.');
 }
 
 function submitBtnForm(d) {

@@ -123,6 +123,9 @@ function renderDatesTable(data) {
       <td class="td-date">${allowSafeHtml(r.date)}</td>
       <td class="td-note">${allowSafeHtml(r.note || '')}</td>
     </tr>`).join('');
+  const footnoteHtml = data.footnote
+    ? `<div class="dates-table-footnote"><span class="dates-table-footnote-label">Note:</span> ${allowSafeHtml(data.footnote)}</div>`
+    : '';
   return `
   <section class="section fade-in">
     <div class="container">
@@ -132,6 +135,7 @@ function renderDatesTable(data) {
         <thead><tr><th>${allowSafeHtml(h1)}</th><th>${allowSafeHtml(h2)}</th><th>${allowSafeHtml(h3)}</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
+      ${footnoteHtml}
     </div>
   </section>`;
 }
